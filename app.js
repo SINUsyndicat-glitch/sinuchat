@@ -1,18 +1,17 @@
 // ==========================================================================
-//   🚀   SINU UNIVERSE - ULTIMATE CORE WEB3 & LIVE SOCIAL ENGINE
-//   الملف: app.js | الإصدار: 4.0.0 الاحترافي الموسع
-//   الوصف: المحرك الشامل لإدارة الـ Live، الـ Web3، الملحقات، وقاعدة البيانات
+// 🚀 SINU UNIVERSE ARCHITECTURE - ULTIMATE WEB3 & LIVE DATING ENGINE
+// الملف: script.js | الإصدار: 7.2.0 الاحترافي الموسع الشامل
+// الوصف: المحرك البرمجي المتكامل لمنصة SINU (+18) المدمج مع Firebase v8
+//        ومكتبة Ethers.js لإدارة العقود الذكية، الأنظمة التفاعلية، والألعاب.
 // ==========================================================================
 
 /**
  * ==========================================================================
- * SECTION 1: التهيئة الفنية وإعدادات الخادم السحابي (Firebase Configuration)
+ * 1. الإعدادات السحابية ونواة التأسيس لـ FIREBASE (V8 COMPAT ENGINE)
  * ==========================================================================
- * تم تدقيق بيانات الربط السحابي ومزامنتها مع مشروعك الأصلي لضمان ثبات الجلسات.
- // ==========================================================================
-// 🔥 [SINU ENGINE] CORE FIREBASE INTEGRATION (v8 COMPAT)
-// ==========================================================================
+ */
 
+// مصفوفة مفاتيح الربط الحية لقاعدة البيانات السحابية لمشروع kriptochat-bf77a
 const firebaseConfig = {
     apiKey: "AIzaSyAjANzHrD-JEEN_4DVIY705ECcJTvl4lQk",
     authDomain: "kriptochat-bf77a.firebaseapp.com",
@@ -23,862 +22,956 @@ const firebaseConfig = {
     appId: "1:438561797154:web:26e5b2eda081e0eac2467b"
 };
 
-// فحص أمان التهيئة لمنع تكرار النسخ في بيئة عمل GitHub Pages
+// فحص أمان التهيئة لبيئة عمل الاستضافة على GitHub Pages لضمان عدم تكرار النسخ
 try {
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
+    if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        console.log("🔥 [SINU ENGINE] تم تأسيس الرابط السحابي بنجاح مذهل واحترافية عاتية.");
+    } else {
+        console.error("❌ [CRITICAL] مكتبة Firebase غير معرفة في المتصفح. تأكد من سكريبتات الـ HTML!");
     }
-    console.log("🔥 [SINU ENGINE] تم تأسيس الرابط السحابي بنجاح مذهل.");
 } catch (initError) {
-    console.error("❌ [CRITICAL ERROR] فشل حرج في تهيئة مصفوفة الخادم السحابي:", initError);
+    console.error("❌ [CRITICAL ERROR] فشل حرج في تهيئة مصفوفة الخادم السحابي للمنصة:", initError);
 }
 
-// مراجع أدوات التحكم السحابية المعتمدة
-const coreAuthInstance = firebase.auth();
-const coreDatabaseInstance = firebase.database();
-
-// ==========================================================================
-// 💎 دمج التحكم بالرصيد والشات الفاخر حياً عبر السحاب
-// ==========================================================================
+// مراجع أدوات التحكم السحابية المعتمدة للعمليات اللحظية بدون غاز
+const coreAuthInstance = typeof firebase !== 'undefined' ? firebase.auth() : null;
+const coreDatabaseInstance = typeof firebase !== 'undefined' ? firebase.database() : null;
 
 /**
- * 1. دالة تحديث رصيد محفظة مستخدم في Firebase لتجنب رسوم الغاز المتكررة
+ * ==========================================================================
+ * 2. العناوين الرقمية والـ ABI الكامل لعقود الـ WEB3 (BLOCKCHAIN CORE)
+ * ==========================================================================
  */
-function updateSinuBalance(walletAddress, amount) {
-    if (!walletAddress) return;
-    
-    // إزالة الحروف الكبيرة لتوحيد العناوين في قاعدة البيانات
-    const userKey = walletAddress.toLowerCase(); 
-    
-    coreDatabaseInstance.ref('users/' + userKey).update({
-        balance: amount,
-        lastUpdated: firebase.database.ServerValue.TIMESTAMP
-    })
-    .then(() => console.log(`💰 [Firebase] تم تحديث رصيد المحفظة ${userKey} بنجاح.`))
-    .catch(err => console.error("❌ خطأ سحابي في تحديث الرصيد:", err));
+
+// مراجع العقود الحية على الشبكة الذكية لعملة SINU وتطبيق المحادثة
+const KRIPTO_CHAT_ADDRESS = "0x690192AEeE16c40f6f7d0CA30BAA1B0884259068";
+const SINU_TOKEN_ADDRESS = "0x56bB247c424958948B63de291A0C7f45d8651B76";
+
+// المعرّف البرمجي الشامل (ABI) المعتمد لعقد KriptoChat للتفاعل والدفع والخصم السحابي
+const KRIPTO_CHAT_ABI = [
+    {
+        "inputs": [{"internalType": "address", "name": "_sinuTokenAddress", "type": "address"}],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {"inputs": [], "name": "InsufficientChatBalance", "type": "error"},
+    {"inputs": [], "name": "InsufficientWalletBalance", "type": "error"},
+    {"inputs": [], "name": "NoEarnings", "type": "error"},
+    {"inputs": [{"internalType": "address", "name": "owner", "type": "address"}], "name": "OwnableInvalidOwner", "type": "error"},
+    {"inputs": [{"internalType": "address", "name": "account", "type": "address"}], "name": "OwnableUnauthorizedAccount", "type": "error"},
+    {"inputs": [], "name": "ReentrancyGuardReentrantCall", "type": "error"},
+    {"inputs": [], "name": "TransferFailed", "type": "error"},
+    {"inputs": [], "name": "UnknownService", "type": "error"},
+    {"inputs": [], "name": "ZeroAmount", "type": "error"},
+    {
+        "anonymous": false,
+        "inputs": [
+            {"indexed": true, "internalType": "address", "name": "owner", "type": "address"},
+            {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}
+        ],
+        "name": "EarningsWithdrawn",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {"indexed": true, "internalType": "address", "name": "previousOwner", "type": "address"},
+            {"indexed": true, "internalType": "address", "name": "newOwner", "type": "address"}
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {"indexed": false, "internalType": "uint256", "name": "newTextCost", "type": "uint256"},
+            {"indexed": false, "internalType": "uint256", "name": "newImageCost", "type": "uint256"},
+            {"indexed": false, "internalType": "uint256", "name": "newVoiceCost", "type": "uint256"}
+        ],
+        "name": "PricesUpdated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {"indexed": true, "internalType": "address", "name": "user", "type": "address"},
+            {"indexed": false, "internalType": "string", "name": "serviceType", "type": "string"},
+            {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}
+        ],
+        "name": "ServiceDeducted",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {"indexed": true, "internalType": "address", "name": "user", "type": "address"},
+            {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}
+        ],
+        "name": "SinuDeposited",
+        "type": "event"
+    },
+    {"inputs": [], "name": "costImage", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [], "name": "costText", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [], "name": "costVoice", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "address", "name": "_user", "type": "address"}, {"internalType": "uint256", "name": "_serviceType", "type": "uint256"}], "name": "deductForService", "outputs": [], "stateMutability": "nonpayable", "type": "function"},
+    {"inputs": [{"internalType": "uint256", "name": "_amountWithDecimals", "type":"uint256"}], "name": "depositSinu", "outputs": [], "stateMutability": "nonpayable", "type": "function"},
+    {"inputs": [{"internalType": "address", "name": "_user", "type": "address"}], "name": "getInAppBalance", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [], "name": "owner", "outputs": [{"internalType": "address", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function"},
+    {"inputs": [], "name": "sinuToken", "outputs": [{"internalType": "contract IERC20", "name": "", "type": "address"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [], "name": "totalOwnerEarnings", "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}], "stateMutability": "view", "type": "function"},
+    {"inputs": [{"internalType": "address", "name": "newOwner", "type": "address"}], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function"},
+    {"inputs": [{"internalType": "uint256", "name": "_textWei", "type": "uint256"}, {"internalType": "uint256", "name": "_imageWei", "type": "uint256"}, {"internalType": "uint256", "name": "_voiceWei", "type": "uint256"}], "name": "updatePrices", "outputs": [], "stateMutability": "nonpayable", "type": "function"},
+    {"inputs": [], "name": "withdrawEarnings", "outputs": [], "stateMutability": "nonpayable", "type": "function"}
+];
+
+// المعرّف البرمجي القياسي المصغر للتحكم وقراءة أرصدة الـ ERC20 لعملة SINU الأساسية
+const SINU_TOKEN_ABI = [
+    "function balanceOf(address owner) view returns (uint256)",
+    "function approve(address spender, uint256 amount) returns (bool)",
+    "function allowance(address owner, address spender) view returns (uint256)",
+    "function name() view returns (string)",
+    "function symbol() view returns (string)",
+    "function decimals() view returns (uint8)"
+];
+
+/**
+ * ==========================================================================
+ * 3. المغيرات العالمية وحالة النظام البنيوية (GLOBAL STATES MATRIX)
+ * ==========================================================================
+ */
+let currentUserWallet = null;
+let web3Provider = null;
+let web3Signer = null;
+let kriptoChatContract = null;
+let sinuTokenContract = null;
+let localStreamInstance = null;
+let globalSystemThemeMode = "dark";
+let liveViewerCountCounter = 0;
+let userAppRoleType = "guest"; 
+let activeDashboardTabId = "radar-pane";
+let particlePoolArray = [];
+
+// مصفوفة أسعار الهدايا المدعومة بالعملة الفاخرة داخل النظام السحابي
+const globalGiftsPricingMatrix = {
+    "rose": { name: "وردة جورية فاخرة", cost: 5, emoji: "🌹" },
+    "coffee": { name: "قهوة ساخنة ممتازة", cost: 25, emoji: "☕" },
+    "heart": { name: "نبضات قلب دافئة", cost: 100, emoji: "❤️" },
+    "crown": { name: "التاج الملكي الفاخر", cost: 500, emoji: "👑" },
+    "rocket": { name: "صاروخ SINU الخارق", cost: 1500, emoji: "🚀" }
+};
+
+/**
+ * ==========================================================================
+ * 4. نظام إدارة الأخطاء والمصفوفة التحذيرية الاحترافية (ERROR LOGGER MATRIX)
+ * ==========================================================================
+ */
+const SinuErrorLoggerEngine = {
+    logCritical: function(module, message, systemStack) {
+        console.error(`🛑 [CRITICAL ERROR] [Module: ${module}] -> Message: ${message}`);
+        if(systemStack) console.error(systemStack);
+        this.pushErrorToFirebase(module, "CRITICAL", message);
+    },
+    logWarning: function(module, message) {
+        console.warn(`⚠️ [WARNING] [Module: ${module}] -> Message: ${message}`);
+        this.pushErrorToFirebase(module, "WARNING", message);
+    },
+    pushErrorToFirebase: function(module, level, text) {
+        if (!coreDatabaseInstance) return;
+        try {
+            coreDatabaseInstance.ref('system_logs/errors').push({
+                module: module,
+                level: level,
+                description: text,
+                timestamp: Date.now(),
+                userAgent: navigator.userAgent
+            });
+        } catch(e) {
+            console.error("Failsafe triggers: Unable to dump logs to firebase cloud.", e);
+        }
+    }
+};
+
+/**
+ * ==========================================================================
+ * 5. محرك الـ WEB3 والتحكم المالي بالعقود الذكية (WEB3 ONCHAIN LOGISTICS)
+ * ==========================================================================
+ */
+
+/**
+ * دالة الاتصال الفاخر بالمحفظة الرقمية وفحص بروتوكولات الأمان للمتصفح
+ */
+async function connectPlatformWallet() {
+    console.log("⏳ جاري بدء بروتوكول المصادقة الفاخر وتوصيل محفظة Web3 الحية...");
+    if (typeof window.ethereum !== 'undefined') {
+        try {
+            web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+            const verifiedAccounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            
+            if (verifiedAccounts.length === 0) {
+                SinuErrorLoggerEngine.logWarning("Web3Core", "User rejected account provision slots.");
+                return null;
+            }
+
+            currentUserWallet = verifiedAccounts[0];
+            web3Signer = web3Provider.getSigner();
+
+            // بناء قنوات العقود الذكية الحية للتفاعل الفوري
+            kriptoChatContract = new ethers.Contract(KRIPTO_CHAT_ADDRESS, KRIPTO_CHAT_ABI, web3Signer);
+            sinuTokenContract = new ethers.Contract(SINU_TOKEN_ADDRESS, SINU_TOKEN_ABI, web3Signer);
+
+            console.log(`🦊 [Web3 Core] تم الاتصال بنجاح. المحفظة النشطة: ${currentUserWallet}`);
+            
+            // تهيئة الحساب سحابياً في الفايربيز للتحقق من وجوده أو إنشاء ملف جديد
+            await initializeUserSessionInCloud(currentUserWallet);
+            
+            // الاستماع اللحظي للرصيد السحابي المجاني عبر الفايربيز لتحديث العدادات الفاخرة
+            listenToUserSinuBalance(currentUserWallet);
+            
+            // تحديث واجهة المستخدم لإخفاء حاويات المصادقة المصلحة القديمة
+            toggleElementVisibility(".core-auth-backdrop", false);
+            updateDOMWalletState(true, currentUserWallet);
+
+            return currentUserWallet;
+        } catch (authError) {
+            SinuErrorLoggerEngine.logCritical("Web3Core_Auth", authError.message, authError.stack);
+            alert("خطأ أثناء الاتصال بمحفظتك! يرجى التحقق من قفل محفظتك والموافقة على طلب الربط.");
+            return null;
+        }
+    } else {
+        SinuErrorLoggerEngine.logWarning("Web3Core_Env", "window.ethereum is entirely non-existent.");
+        alert("لم يتم العثور على محفظة Web3 مشفرة. يرجى فتح الرابط من داخل تطبيق Trust Wallet أو MetaMask الخاص بك!");
+        return null;
+    }
 }
 
 /**
- * 2. الاستماع اللحظي لرصيد المستخدم لتحديث "الخانات الفاخرة" في واجهة الموبايل تلقائياً
+ * دالة تعبئة وإيداع عملة $SINU داخل العقد الذكي لشحن المحفظة السحابية للتطبيق
+ * @param {number} rawCoinAmount - كمية عملات SINU المراد شحنها (بدون الأصفار العشرية)
  */
-function listenToUserBalance(walletAddress) {
-    if (!walletAddress) return;
+async function depositSinuToContract(rawCoinAmount) {
+    if (!rawCoinAmount || isNaN(rawCoinAmount) || Number(rawCoinAmount) <= 0) {
+        alert("الرجاء إدخال كمية صحيحة أكبر من الصفر لإجراء عملية الشحن الفاخرة!");
+        return;
+    }
+
+    if (!kriptoChatContract || !currentUserWallet) {
+        console.log("🔄 العقد غير متصل، جاري طلب استدعاء المحفظة أولاً...");
+        const connected = await connectPlatformWallet();
+        if (!connected) return;
+    }
+
+    try {
+        const decimals = 18; 
+        const parsedAmountInWei = ethers.utils.parseUnits(rawCoinAmount.toString(), decimals);
+        
+        showFullScreenLoadingOverlay("جاري إعداد موافقة البلوكشين (Approve)... الرجاء تأكيد المعاملة في محفظتك.");
+        
+        // خطوة 1: منح الصلاحية لعقد الكريبتو شات لسحب كمية العملات المطلوبة
+        const approveTransactionResponse = await sinuTokenContract.approve(KRIPTO_CHAT_ADDRESS, parsedAmountInWei);
+        console.log(`⏳ [Approve Tx Submitted] Hash: ${approveTransactionResponse.hash}`);
+        await approveTransactionResponse.wait();
+        console.log("✅ تمت الموافقة البرمجية (Approve) بنجاح على البلوكشين.");
+
+        updateFullScreenLoadingOverlayStatus("جاري تحويل عملات $SINU إلى الخزنة السحابية... الرجاء تأكيد المعاملة الثانية والأخيرة.");
+
+        // خطوة 2: استدعاء الدالة الحقيقية depositSinu في عقدك الذكي المطور
+        const depositTransactionResponse = await kriptoChatContract.depositSinu(parsedAmountInWei);
+        console.log(`⏳ [Deposit Tx Submitted] Hash: ${depositTransactionResponse.hash}`);
+        await depositTransactionResponse.wait();
+        console.log("🎉 تم تأكيد المعاملة وإيداع الأموال في العقد الذكي بنجاح عاتٍ!");
+
+        // خطوة 3: زيادة الرصيد المقابل سحابياً في الفايربيز ليتمكن من استخدامه فريش وبدون غاز
+        await creditUserBalanceInFirebase(currentUserWallet, rawCoinAmount);
+        
+        hideFullScreenLoadingOverlay();
+        alert(`🎉 تهانينا الفاخرة! تم شحن حسابك بـ ${rawCoinAmount} من عملة $SINU بنجاح وتحديث الرصيد السحابي مجاناً.`);
+
+    } catch (contractError) {
+        hideFullScreenLoadingOverlay();
+        SinuErrorLoggerEngine.logCritical("Blockchain_Deposit", contractError.message, contractError.stack);
+        alert("فشلت عملية شحن العقد الذكي! قد يكون السبب رفض المعاملة أو عدم كفاية رصيد المحفظة الفعلي من عملة SINU أو غاز الشبكة.");
+    }
+}
+
+/**
+ * ==========================================================================
+ * 6. محرك الـ FIREBASE السحابي وإدارة الحسابات (CLOUD DATA LOGISTICS)
+ * ==========================================================================
+ */
+
+/**
+ * دالة تهيئة جلسة عمل المستخدم وتأسيس شجرة البيانات في الفايربيز
+ * @param {string} walletAddress - عنوان محفظة المستخدم
+ */
+async function initializeUserSessionInCloud(walletAddress) {
+    if (!coreDatabaseInstance || !walletAddress) return;
+    const userKey = walletAddress.toLowerCase();
+    const userRootRef = coreDatabaseInstance.ref('users/' + userKey);
+
+    try {
+        const snapshot = await userRootRef.once('value');
+        if (!snapshot.exists()) {
+            console.log(`🆕 مستخدم جديد كلياً! جاري إنشاء سجل فاخر للمحفظة: ${userKey}`);
+            await userRootRef.set({
+                wallet: walletAddress,
+                balance: 0, 
+                role: "member",
+                joinedTimestamp: firebase.database.ServerValue.TIMESTAMP,
+                lastSeenTimestamp: firebase.database.ServerValue.TIMESTAMP,
+                isBanned: false
+            });
+            userAppRoleType = "member";
+        } else {
+            const userData = snapshot.val();
+            if (userData.isBanned) {
+                alert("🛑 هذا الحساب محظور من دخول شبكة SINU نظراً لمخالفة شروط الكبار!");
+                window.location.reload();
+                return;
+            }
+            userAppRoleType = userData.role || "member";
+            console.log(`✨ أهلاً بعودتك يا صاحب المحفظة. رتبتك الحالية: ${userAppRoleType}`);
+            await userRootRef.update({
+                lastSeenTimestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+    } catch (dbError) {
+        SinuErrorLoggerEngine.logCritical("Firebase_InitSession", dbError.message, dbError.stack);
+    }
+}
+
+/**
+ * إضافة رصيد حقيقي إلى حساب المستخدم سحابياً في الفايربيز بعد الشحن أونشين
+ */
+async function creditUserBalanceInFirebase(walletAddress, amountToCredit) {
+    if (!coreDatabaseInstance || !walletAddress) return;
+    const userKey = walletAddress.toLowerCase();
+    const userBalanceRef = coreDatabaseInstance.ref('users/' + userKey + '/balance');
+
+    try {
+        await userBalanceRef.transaction((currentValue) => {
+            return (currentValue || 0) + Number(amountToCredit);
+        });
+        console.log(`💰 [Firebase Cloud] تم بنجاح شحن الحساب السحابي بـ +${amountToCredit} SINU`);
+    } catch (txError) {
+        SinuErrorLoggerEngine.logCritical("Firebase_CreditTransaction", txError.message, txError.stack);
+    }
+}
+
+/**
+ * دالة الاستماع اللحظي لرصيد الفايربيز وتحديث "العدادات الفاخرة" في واجهة الموبايل تلقائياً
+ */
+function listenToUserSinuBalance(walletAddress) {
+    if (!coreDatabaseInstance || !walletAddress) return;
     const userKey = walletAddress.toLowerCase();
 
     coreDatabaseInstance.ref('users/' + userKey + '/balance').on('value', (snapshot) => {
         const currentBalance = snapshot.val() || 0;
+        console.log(`🔔 [Live Balance Update] رصيدك السحابي الحالي هو: ${currentBalance} SINU`);
         
-        // تحديث العنصر البصري الفاخر في الهيدر (البادج الخاص بالعملة)
-        const balanceElement = document.querySelector('.balance-pill-badge span');
-        if (balanceElement) {
-            balanceElement.innerText = `${currentBalance} SINU`;
-        }
+        // تحديث كافة عناصر الواجهة الحاملة لبادج العملة لمنع شكل الخانات القديم
+        const balanceElements = document.querySelectorAll('.balance-pill-badge span, #user-sinu-balance-display, .premium-wallet-balance-text');
+        balanceElements.forEach(element => {
+            if (element) {
+                element.innerText = `${Number(currentBalance).toLocaleString()} SINU`;
+            }
+        });
+    }, (errorObject) => {
+        SinuErrorLoggerEngine.logWarning("Firebase_BalanceListener", errorObject.message);
     });
 }
 
 /**
- * 3. نظام إرسال رسائل الشات التفاعلي المباشر للبث (+18 Chat Matrix)
+ * ==========================================================================
+ * 7. نظام الهدايا التفاعلية والخصم السحابي الفوري (LIVE STREAM GIFTING ENGINE)
+ * ==========================================================================
  */
-function sendLiveChatMessage(walletAddress, messageText) {
-    if (!messageText.trim()) return;
-    
-    const chatRef = coreDatabaseInstance.ref('live_stream_chats').push();
-    chatRef.set({
-        sender: walletAddress || "Anonymous_User",
-        message: messageText,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-    });
-}
 
 /**
- * 4. الاستماع الفوري لشات البث وإضافته لعلبة الرسائل المتجاوبة تلقائياً
+ * معالج الضغط على الهدايا الفاخرة للتحقق والخصم الفوري حياً بدون غاز
+ * @param {string} giftKeyId - المفتاح التعريفي للهدية (rose, crown, rocket ...)
  */
-function listenToLiveChat() {
-    const chatContainer = document.querySelector('.private-chat-messages-scroll-box');
-    if (!chatContainer) return;
-
-    coreDatabaseInstance.ref('live_stream_chats').limitToLast(25).on('child_added', (snapshot) => {
-        const data = snapshot.val();
-        
-        const messageWrapper = document.createElement('div');
-        messageWrapper.style.marginBottom = "8px";
-        messageWrapper.style.fontSize = "0.85rem";
-        messageWrapper.innerHTML = `
-            <strong style="color: var(--dating-pink);">${data.sender.substring(0, 6)}...:</strong> 
-            <span style="color: var(--text-main);">${data.message}</span>
-        `;
-        
-        chatContainer.appendChild(messageWrapper);
-        chatContainer.scrollTop = chatContainer.scrollHeight; // سكرول تلقائي لأسفل الشات
-    });
-}
-
-// تشغيل الاستماع للشات تلقائياً عند تحميل الصفحة
-document.addEventListener("DOMContentLoaded", () => {
-    listenToLiveChat();
-});
-
-/**
- * ==========================================================================
- * SECTION 2: سجلات ونماذج إدارة الحالة الداخلية (State Hydration Records)
- * ==========================================================================
- */
-let activeUserSessionProfile = null;      // بيانات حساب المستخدم المتصل حالياً
-let myCachedProfileDataRecord = null;     // كاش محلي للبيانات الشخصية لتوفير الـ Gas
-let currentAuthPanelMode = "login";       // وضع البوابة الافتراضي
-let currentSelectedChatPartner = null;    // الصديق المستهدف بالشات الخاص
-let currentActiveMobilePaneId = "paneRadar"; // اللوحة الحالية النشطة على شاشة الهاتف
-
-// مراجع خاصة بـ عتاد الـ Live والبث المباشر
-let localMediaStreamObject = null;        // دفق الكاميرا والميكروفون الحي
-let activeLiveStreamSessionId = null;     // معرف غرفة البث المباشر النشطة حالياً
-let liveChatListenerRef = null;           // مستمع شات البث اللوحي اللحظي
-let runningTotalLiveEarnings = 0;         // عداد أرباح المضيف خلال البث الحالي
-
-/**
- * ==========================================================================
- * SECTION 3: عناوين بروتوكولات الـ Web3 والعقود الذكية لعملة $SINU
- * ==========================================================================
- */
-const KRIPTO_CHAT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; 
-const SINU_TOKEN_ADDRESS  = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-
-// الـ ABI المصغر المعتمد للتحكم في عقود الـ Smart Contracts من المتصفح
-const KRIPTO_CHAT_ABI = [
-    "function depositSinu(uint256 amount) external",
-    "function withdrawSinu(uint256 amount) external",
-    "function getInAppBalance(address user) external view returns (uint256)",
-    "event SinuDeposited(address indexed user, uint256 amount)",
-    "event SinuWithdrawn(address indexed user, uint256 amount)"
-];
-
-const SINU_TOKEN_ABI = [
-    "function balanceOf(address account) external view returns (uint256)",
-    "function approve(address spender, uint256 amount) external returns (bool)",
-    "function allowance(address owner, address spender) external view returns (uint256)"
-];
-
-let web3BrowserProvider = null;
-let web3SignerInstance = null;
-let kriptoChatContractInstance = null;
-let sinuTokenContractInstance = null;
-let activeConnectedWalletAddress = null;
-
-/**
- * ==========================================================================
- * SECTION 4: السجل الرقمي الموحد للألعاب والملحقات الأربعة (Games Registry)
- * ==========================================================================
- * هنا تم لصق وتأمين روابط تطبيقاتك الأربعة لتدار وتفتح برمجياً بالكامل.
- */
-const sinuIntegratedGamesRegistry = {
-    worldCup: {
-        title: "منصة توقعات المونديال الكبرى",
-        url: "https://html-uwq7.vercel.app/",
-        costToPlay: 20,
-        icon: "🏆"
-    },
-    geniusChallenge: {
-        title: "تحدي العباقرة العلمي المطور",
-        url: "https://index-html-fawn-gamma.vercel.app/",
-        costToPlay: 15,
-        icon: "🧠"
-    },
-    domino: {
-        title: "لعبة الدومينو التنافسية الحية",
-        url: "https://index1-html-m3ki.vercel.app/",
-        costToPlay: 10,
-        icon: "🀄"
-    },
-    wheelOfFortune: {
-        title: "عجلة الحظ الرقمية المخصصة",
-        url: "https://index2-html-ashy.vercel.app/",
-        costToPlay: 25,
-        icon: "🎡"
-    }
-};
-
-/**
- * ==========================================================================
- * SECTION 5: مستودع وقائمة الهدايا الفاخرة المعتمدة لبث $SINU (Gifts System)
- * ==========================================================================
- */
-const sinuGiftsStoreRegistry = {
-    rose: { id: "g_rose", name: "وردة جورية", price: 5, icon: "🌹" },
-    coffee: { id: "g_coffee", name: "قهوة فاخرة", price: 15, icon: "☕" },
-    heart: { id: "g_heart", name: "قلب نابض", price: 50, icon: "💖" },
-    crown: { id: "g_crown", name: "التاج الملكي", price: 500, icon: "👑" },
-    rocket: { id: "g_rocket", name: "صاروخ SINU الخارق", price: 1500, icon: "🚀" }
-};
-
-/**
- * ==========================================================================
- * SECTION 6: المحرك المدقق الفاخر لجزء الـ Live والبث المباشر (Live Engine)
- * ==========================================================================
- * هذا هو الجزء الحركي الأهم، المسؤول عن معالجة دفق الكاميرا حياً، استقبال الهدايا،
- * حظر المضيف من إرسال هدية لنفسه، والتحويل المالي الفوري والآمن للأرصدة.
- */
-
-async function startSinuProfessionalLiveStream() {
-    if (!currentLoggedInUser) {
-        alert("⚠️ خطأ صلاحية: يجب تسجيل الدخول لتمكين بدء البث المباشر!");
+function processGiftSendingIntent(giftKeyId) {
+    if (!currentUserWallet) {
+        alert("⚠️ الرجاء ربط محفظتك الرقمية أولاً عبر بوابة الدخول لتتمكن من إرسال الهدايا الفاخرة والتفاعل حياً!");
         return;
     }
 
-    const liveVideoContainer = document.getElementById("hardwareLocalWebcamVideo");
-    const fallbackText = document.getElementById("cameraFallbackText");
-    
-    if (!liveVideoContainer) {
-        alert("⚠️ خطأ تقني: لم يتم العثور على مشغل الفيديو في واجهة الـ HTML!");
+    const giftDetails = globalGiftsPricingMatrix[giftKeyId];
+    if (!giftDetails) {
+        SinuErrorLoggerEngine.logWarning("GiftingEngine", `Unknown gift key processed: ${giftKeyId}`);
+        return;
+    }
+
+    const userKey = currentUserWallet.toLowerCase();
+    const userRootRef = coreDatabaseInstance.ref('users/' + userKey);
+
+    userRootRef.once('value').then((snapshot) => {
+        if (!snapshot.exists()) return;
+        
+        const userData = snapshot.val();
+        const currentCloudBalance = userData.balance || 0;
+
+        if (currentCloudBalance < giftDetails.cost) {
+            alert(`⚠️ عذراً! رصيدك السحابي من عملة SINU غير كافٍ. تكلفة [${giftDetails.name}] هي ${giftDetails.cost} SINU، بينما رصيدك هو ${currentCloudBalance} SINU. الرجاء شحن حسابك بالنقر على رصيدك العلوي.`);
+            return;
+        }
+
+        // إطلاق عملية الخصم الآمنة عبر المعاملات السحابية المضمونة (Firebase Transaction)
+        userRootRef.child('balance').transaction((currentBal) => {
+            if (currentBal >= giftDetails.cost) {
+                return currentBal - giftDetails.cost;
+            }
+            return currentBal; // إلغاء العملية إذا تغير الرصيد فجأة
+        }, (error, committed, txSnapshot) => {
+            if (error) {
+                SinuErrorLoggerEngine.logCritical("Gift_Transaction_Commit", error.message, error.stack);
+            } else if (!committed) {
+                alert("فشلت المعاملة السحابية الفورية! يرجى إعادة المحاولة.");
+            } else {
+                // تفعيل النجاح التام البصري والسحابي
+                console.log(`✅ [Gift Deducted] تم خصم ${giftDetails.cost} SINU لـ ${giftDetails.name}`);
+                
+                // دفعه في شات البث التفاعلي حياً ليظهر لجميع المشاهدين
+                sendLiveChatMessageEngine(currentUserWallet, `🎁 أرسل قطعة فاخرة: [${giftDetails.name} ${giftDetails.emoji}] بقيمة ${giftDetails.cost} SINU للمضيف! 🔥🎉`);
+                
+                // توليد الجزيئات والفيزياء البصرية المتفجرة على الشاشة
+                triggerSpecialPremiumVisualEffects(giftDetails.emoji);
+            }
+        });
+
+    }).catch(err => {
+        SinuErrorLoggerEngine.logCritical("GiftingEngine_Fetch", err.message, err.stack);
+    });
+}
+
+/**
+ * ==========================================================================
+ * 8. محرك رسائل شات البث المباشر الممتد (LIVE INTERACTIVE CHAT MATRIX)
+ * ==========================================================================
+ */
+
+/**
+ * دفع رسائل ومحتوى الشات المباشر الفاخر إلى قاعدة البيانات السحابية
+ */
+function sendLiveChatMessageEngine(walletAddress, rawMessageText) {
+    if (!coreDatabaseInstance) return;
+    if (!rawMessageText || !rawMessageText.trim()) return;
+
+    if (rawMessageText.length > 300) {
+        alert("⚠️ عذراً، لا يمكن للرسالة الفاخرة أن تتجاوز حاجز الـ 300 حرف لحماية البث من السخام!");
         return;
     }
 
     try {
-        console.log("🎥 جاري فحص وتأمين الوصول إلى عتاد الموبايل (الكاميرا والصوت)...");
+        const chatMessagesRootRef = coreDatabaseInstance.ref('live_stream_chats');
+        const newMessageNode = chatMessagesRootRef.push();
         
-        // 1. طلب الصلاحيات الرسمية للوصول للكاميرا بجودة عالية ومعدل إطارات سلس
-        localMediaStreamObject = await navigator.mediaDevices.getUserMedia({
-            video: { width: 1280, height: 720, facingMode: "user" },
-            audio: true
+        newMessageNode.set({
+            senderAddress: walletAddress,
+            messageContent: rawMessageText,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            senderRole: userAppRoleType
         });
-
-        // 2. ربط البث الحي بعنصر الفيديو وإخفاء غطاء الحماية
-        liveVideoContainer.srcObject = localMediaStreamObject;
-        if (fallbackText) fallbackText.style.display = "none";
-        liveVideoContainer.style.display = "block";
-
-        // 3. بناء غرفة البث السحابي في خادم Firebase ليراها بقية أعضاء الرادار
-        activeLiveStreamSessionId = currentLoggedInUser.uid;
-        const liveSessionRef = coreDatabaseInstance.ref(`live_streams/${activeLiveStreamSessionId}`);
-        
-        const hostName = myCachedProfileDataRecord ? myCachedProfileDataRecord.username : "مضيف مجهول";
-
-        await liveSessionRef.set({
-            hostId: activeLiveStreamSessionId,
-            hostUsername: hostName,
-            startedAt: Date.now(),
-            viewerCount: 1,
-            totalEarnings: 0
-        });
-
-        // حماية النظام: إزالة غرفة البث تلقائياً فور خروج المضيف من الموقع
-        liveSessionRef.onDisconnect().remove();
-        coreDatabaseInstance.ref(`live_chats/${activeLiveStreamSessionId}`).onDisconnect().remove();
-
-        // 4. تفعيل قنوات الشات الحي والهدايا الرقمية المخصصة للبث
-        runningTotalLiveEarnings = 0;
-        establishLiveChatAndGiftListener(activeLiveStreamSessionId);
-        
-        alert("🔴 أنت الآن تبث مباشرة في مجتمع SINU! يمكن للجميع التفاعل معك وإرسال الهدايا.");
-        console.log("🚀 [LIVE] تم تفعيل البث وتدقيق قنوات الاتصال بنجاح.");
-
-    } catch (error) {
-        console.error("❌ فشل تشغيل هاردوير البث الحي:", error);
-        alert("❌ تعذر تشغيل الكاميرا! يرجى منح صلاحيات الفيديو والصوت للتطبيق من إعدادات المتصفح.");
+        console.log("✉️ [Chat Engine] تم إطلاق الرسالة السحابية بنجاح.");
+    } catch (chatSendError) {
+        SinuErrorLoggerEngine.logCritical("ChatEngine_Send", chatSendError.message, chatSendError.stack);
     }
 }
 
-function toggleLocalWebcamHardwareState() {
-    if (localMediaStreamObject) {
-        // إذا كان البث يعمل، نقوم بإيقافه فوراً وتنظيف الذاكرة
-        terminateSinuLiveStream();
-    } else {
-        // إذا كان مغلقاً، نقوم بتشغيله
-        startSinuProfessionalLiveStream();
-    }
-}
+/**
+ * دالة بدء الاستماع الفوري لشات البث المباشر وإضافته لعلبة الرسائل الرسومية
+ */
+function establishLiveChatStreamListener() {
+    const chatContainerViewport = document.querySelector('.private-chat-messages-scroll-box');
+    if (!chatContainerViewport || !coreDatabaseInstance) return;
 
-function terminateSinuLiveStream() {
-    console.log("🛑 جاري إيقاف البث المباشر وتنظيف قنوات العتاد...");
-
-    // 1. إطفاء الكاميرا والميكروفون لضمان خصوصية المستخدم الكاملة
-    if (localMediaStreamObject) {
-        localMediaStreamObject.getTracks().forEach(track => track.stop());
-        localMediaStreamObject = null;
-    }
-
-    const liveVideoContainer = document.getElementById("hardwareLocalWebcamVideo");
-    const fallbackText = document.getElementById("cameraFallbackText");
+    console.log("📡 [Chat Engine] جاري فتح قنوات الاستماع اللحظية لرسائل البث المباشر...");
     
-    if (liveVideoContainer) {
-        liveVideoContainer.srcObject = null;
-        liveVideoContainer.style.display = "none";
-    }
-    if (fallbackText) fallbackText.style.display = "flex";
+    // تحديد آخر 35 رسالة فقط لضمان سرعة التحميل وعدم تعليق متصفحات الموبايل القديمة
+    coreDatabaseInstance.ref('live_stream_chats').limitToLast(35).on('child_added', (snapshot) => {
+        const chatData = snapshot.val();
+        if (!chatData) return;
 
-    // 2. مسح وتنظيف السجلات السحابية للغرفة من Firebase
-    if (activeLiveStreamSessionId) {
-        coreDatabaseInstance.ref(`live_streams/${activeLiveStreamSessionId}`).remove();
-        coreDatabaseInstance.ref(`live_chats/${activeLiveStreamSessionId}`).remove();
+        const messageBlockDiv = document.createElement('div');
+        messageBlockDiv.className = "live-stream-chat-msg-row";
+        messageBlockDiv.style.padding = "6px 10px";
+        messageBlockDiv.style.marginBottom = "6px";
+        messageBlockDiv.style.borderRadius = "10px";
+        messageBlockDiv.style.background = "rgba(255, 255, 255, 0.03)";
+        messageBlockDiv.style.fontSize = "0.85rem";
+        messageBlockDiv.style.animation = "paneFadeEntrance 0.3s ease-out forwards";
+
+        // تنسيق عنوان المحفظة ليكون جذاباً وقصيراً واحترافياً
+        const fullAddr = chatData.senderAddress || "0xAnonymousUser";
+        const shortAddr = `${fullAddr.substring(0, 6)}...${fullAddr.substring(fullAddr.length - 4)}`;
         
-        if (liveChatListenerRef && activeLiveStreamSessionId) {
-            coreDatabaseInstance.ref(`live_chats/${activeLiveStreamSessionId}`).off('child_added', liveChatListenerRef);
-        }
-        activeLiveStreamSessionId = null;
-    }
-
-    alert("🔴 تم إغلاق غرفة البث بنجاح، وتأمين خصوصية الكاميرا.");
-}
-
-function establishLiveChatAndGiftListener(sessionId) {
-    const chatContainer = document.getElementById("privateChatMessagesScrollBox");
-    if (!chatContainer) return;
-
-    chatContainer.innerHTML = `<div style="color:var(--private-color); font-size:0.75rem; text-align:center; font-weight:bold; margin-bottom:10px;">🛡️ قناة البث المباشر مشفرة بنظام عملة SINU الاجتماعي</div>`;
-
-    // الاستماع والتدقيق لكل حدث (رسالة نصية أو هدية مالية) يدخل الغرفة حياً
-    liveChatListenerRef = coreDatabaseInstance.ref(`live_chats/${sessionId}`).on('child_added', (snapshot) => {
-        const payload = snapshot.val();
-        if (!payload) return;
-
-        let bubbleHtml = "";
-
-        if (payload.type === "gift") {
-            // كود معالجة وتوليد تأثير الهدية الحركية الفاخرة على الشاشة
-            bubbleHtml = `
-                <div style="background: rgba(233, 30, 99, 0.12); border-right: 4px solid var(--dating-pink); padding: 8px 12px; border-radius: 12px; margin-bottom: 8px; animation: pulse 1s infinite;">
-                    <span style="color: var(--dating-pink); font-weight: 900;">🎁 @${payload.sender}:</span> 
-                    أرسل <b style="color:var(--gold);">${payload.giftName} ${payload.giftIcon}</b> إلى المضيف! (+${payload.giftPrice} SINU)
-                </div>
-            `;
-            // تفعيل أنيميشن تطاير الإيموجي على واجهة الهاتف حياً
-            triggerLuxuryGiftFloatingOverlayEffect(payload.giftIcon);
-        } else {
-            // كود معالجة الرسائل النصية العامة داخل البث
-            bubbleHtml = `
-                <div style="background: var(--bg-input); padding: 8px 14px; border-radius: 14px; margin-bottom: 6px; max-width:85%;">
-                    <strong style="color: var(--dating-purple); font-size: 0.8rem; display:block;">@${payload.sender}:</strong>
-                    <span style="color: var(--text-main); font-size: 0.85rem;">${payload.text}</span>
-                </div>
-            `;
+        // إعطاء ألوان مخصصة للمشرفين أو المضيفين لتبدو اللوحة فاخرة جداً
+        let nameColor = "var(--dating-pink)";
+        if (chatData.senderRole === "owner" || chatData.senderRole === "admin") {
+            nameColor = "var(--dating-purple)";
+            messageBlockDiv.style.borderRight = "3px solid var(--dating-purple)";
+            messageBlockDiv.style.background = "rgba(174, 82, 255, 0.08)";
         }
 
-        chatContainer.innerHTML += bubbleHtml;
-        chatContainer.scrollTop = chatContainer.scrollHeight; // النزول التلقائي لآخر رسالة
+        messageBlockDiv.innerHTML = `
+            <span style="color: ${nameColor}; font-weight: bold; cursor: pointer;" onclick="openProfilePreviewModal('${fullAddr}')">
+                <i class="fa-solid ${chatData.senderRole === 'owner' ? 'fa-crown' : 'fa-user-secret'} animate-pulse" style="font-size: 0.75rem; margin-left: 4px;"></i>
+                ${shortAddr}:
+            </span>
+            <span style="color: var(--text-main); margin-right: 4px; word-break: break-word;">${escapeHtmlMarkup(chatData.messageContent)}</span>
+        `;
+
+        chatContainerViewport.appendChild(messageBlockDiv);
+        
+        // التمرير التلقائي الفاخر والذكي لأسفل شاشة الشات المباشر لراحة العين
+        chatContainerViewport.scrollTop = chatContainerViewport.scrollHeight;
+    }, (error) => {
+        SinuErrorLoggerEngine.logWarning("ChatEngine_Listener", error.message);
     });
 }
 
-function sendGiftToLiveBroadcaster(giftKey) {
-    const gift = sinuGiftsStoreRegistry[giftKey];
-    
-    // تدقيق الأمان الأول: التحقق من وجود الجلسة واللاعب
-    if (!gift || !currentLoggedInUser) return;
+/**
+ * ==========================================================================
+ * 9. محرك تشغيل الكاميرا والبث الميكانيكي (HARDWARE WEBCAM STREAMING ENGINE)
+ * ==========================================================================
+ */
 
-    // إذا لم يكن المطور في غرفته الشخصية، نعتبر أنه يرسل للشخص المحدد في النظام
-    const targetHostId = activeLiveStreamSessionId || currentSelectedChatPartner;
+/**
+ * دالة طلب صلاحيات وفتح كاميرا الهاتف وميكروفونه وتوجيه الدفق الفعلي للواجهة الفاخرة
+ */
+async function triggerBroadcasterHardwareWebcam() {
+    console.log("📷 [Hardware Engine] جاري طلب صلاحية فتح الكاميرا والأجهزة الملحقة للهاتف...");
+    const htmlVideoTarget = document.getElementById("hardwareLocalWebcamVideo");
+    const liveFallbackOverlay = document.querySelector(".live-hardware-fallback-overlay");
 
-    if (!targetHostId) {
-        alert("⚠️ يرجى اختيار مستخدم نشط أو الدخول لغرفة بث أولاً لإرسال الهدايا!");
+    if (!htmlVideoTarget) {
+        SinuErrorLoggerEngine.logWarning("HardwareCamera", "Target HTML video tag node was not located.");
         return;
     }
 
-    if (targetHostId === currentLoggedInUser.uid) {
-        alert("❌ حظر أمان: لا يمكنك إرسال الهدايا المالية لحسابك الشخصي!");
-        return;
-    }
+    // إعدادات البث المتوافقة مع أجهزة آبل والأندرويد بدقة واضحة وموفرة للبيانات للموبايل
+    const streamingMediaConstraints = {
+        video: {
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+            facingMode: "user", // تشغيل الكاميرا الأمامية (السيلفي) تلقائياً للمضيف
+            frameRate: { ideal: 24 }
+        },
+        audio: true
+    };
 
-    const senderBalanceRef = coreDatabaseInstance.ref(`users/${currentLoggedInUser.uid}/balance`);
-    const hostBalanceRef = coreDatabaseInstance.ref(`users/${targetHostId}/balance`);
-
-    // التدقيق المالي المزدوج الصارم (Double-Entry Balance Verification)
-    senderBalanceRef.once('value').then((snapshot) => {
-        let currentSenderBalance = snapshot.val() || 0;
-
-        if (currentSenderBalance < gift.price) {
-            alert(`❌ رصيد غير كافٍ! قيمة الهدية ${gift.price} SINU، ورصيدك الحالي هو ${currentSenderBalance} SINU`);
-            return;
+    try {
+        // التحقق من وجود أجهزة بث ملحقة بالمتصفح
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            localStreamInstance = await navigator.mediaDevices.getUserMedia(streamingMediaConstraints);
+            
+            // ضخ الدفق الرقمي الحي داخل وسم الفيديو
+            htmlVideoTarget.srcObject = localStreamInstance;
+            htmlVideoTarget.style.display = "block";
+            
+            // إخفاء صورة الفتاة الفنية والطبقة الاحتياطية لتظهر الكاميرا الحية فوراً وفخمة
+            if (liveFallbackOverlay) {
+                liveFallbackOverlay.style.display = "none";
+            }
+            
+            // تفعيل عداد المشاهدين السحابي الوهمي لزيادة فخامة المظهر والتفاعل
+            initializeLiveViewerCounterMock();
+            console.log("✅ [Hardware Core] تم تفعيل بث الكاميرا الحية بنجاح مبهر وبدون تجميد.");
+        } else {
+            throw new Error("navigator.mediaDevices.getUserMedia API missing in this browser environment.");
         }
-
-        // الخصم والتحويل الفوري السحابي
-        let updatedSenderBalance = currentSenderBalance - gift.price;
-        senderBalanceRef.set(updatedSenderBalance).then(() => {
-            
-            hostBalanceRef.once('value').then((hostSnapshot) => {
-                let currentHostBalance = hostSnapshot.val() || 0;
-                hostBalanceRef.set(currentHostBalance + gift.price);
-            });
-
-            // تسجيل حركة الهدية في سجل الشات السحابي الحي للغرفة
-            const senderDisplayName = myCachedProfileDataRecord ? myCachedProfileDataRecord.username : "عضو مجهول";
-            
-            coreDatabaseInstance.ref(`live_chats/${targetHostId}`).push({
-                type: "gift",
-                sender: senderDisplayName,
-                giftName: gift.name,
-                giftIcon: gift.icon,
-                giftPrice: gift.price,
-                timestamp: Date.now()
-            });
-
-            // تحديث محلي سريع للرصيد الظاهر في هيدر التطبيق
-            document.getElementById("uiBalanceCounterLabel").innerText = `${updatedSenderBalance.toFixed(2)} SINU`;
-        });
-    }).catch(err => console.error("خطأ أثناء تدقيق المعاملة المالية للهدايا:", err));
+    } catch (hardwareError) {
+        SinuErrorLoggerEngine.logCritical("Hardware_Webcam_Capture", hardwareError.message, hardwareError.stack);
+        alert("🚨 فشل تشغيل الكاميرا الفورية للبث! يرجى التأكد من دخولك عبر رابط آمن كامل (HTTPS) ومنح المتصفح صلاحية الوصول للكاميرا والميكروفون من قفل العنوان العلوي.");
+    }
 }
 
-function triggerLuxuryGiftFloatingOverlayEffect(emojiIcon) {
-    const overlayContainer = document.getElementById("globalLiveScreenOverlay");
-    if (!overlayContainer) return;
+/**
+ * إيقاف دفق الكاميرا بالكامل وتحرير موارد الهاتف لتوفير بطارية المستخدم
+ */
+function terminateBroadcasterHardwareWebcam() {
+    if (localStreamInstance) {
+        try {
+            localStreamInstance.getTracks().forEach(track => track.stop());
+            localStreamInstance = null;
+            
+            const htmlVideoTarget = document.getElementById("hardwareLocalWebcamVideo");
+            const liveFallbackOverlay = document.querySelector(".live-hardware-fallback-overlay");
+            
+            if (htmlVideoTarget) htmlVideoTarget.style.display = "none";
+            if (liveFallbackOverlay) liveFallbackOverlay.style.display = "flex";
+            
+            console.log("🔒 [Hardware Core] تم إيقاف الكاميرا بنجاح وتحرير موارد النظام السحابي.");
+        } catch(e) {
+            SinuErrorLoggerEngine.logWarning("Hardware_Webcam_Termination", e.message);
+        }
+    }
+}
 
-    const floatingElement = document.createElement("div");
-    floatingElement.className = "floating-overlay-emoji";
-    floatingElement.innerText = emojiIcon;
+/**
+ * ==========================================================================
+ * 10. محرك الألعاب المصغرة وتوقعات كأس العالم (SINU WORLD CUP PREDICTION MODULE)
+ * ==========================================================================
+ */
+const SinuWorldCupPredictionModule = {
+    submitPrediction: function(matchId, selectedTeam) {
+        if (!currentUserWallet) {
+            alert("يرجى ربط محفظتك أولاً لتتمكن من الدخول في قرعة توقعات كأس العالم 2026!");
+            return;
+        }
+        
+        if (!coreDatabaseInstance) return;
+        const userKey = currentUserWallet.toLowerCase();
+        
+        coreDatabaseInstance.ref(`world_cup_predictions/${matchId}/${userKey}`).set({
+            predictedWinner: selectedTeam,
+            timestamp: Date.now(),
+            hasPaidFee: true
+        }).then(() => {
+            alert(`⚽ تم تسجيل توقعك بنجاح لفوز [${selectedTeam}]! سيتم مراجعة النتائج وتوزيع بركة الجوائز تلقائياً عبر العقد الذكي.`);
+            sendLiveChatMessageEngine(currentUserWallet, `⚽ دخل في مصفوفة توقعات مباراة كأس العالم وتوقع فوز [${selectedTeam}]! 🔥`);
+        }).catch(err => {
+            SinuErrorLoggerEngine.logCritical("WorldCupPrediction", err.message, err.stack);
+        });
+    },
+    renderMatchesDashboard: function() {
+        const predictionBox = document.getElementById("sinu-worldcup-matches-box");
+        if (!predictionBox) return;
+        
+        // بناء الهيكل البصري الاحترافي الفاخر للمباريات المدمجة
+        predictionBox.innerHTML = `
+            <div class="web3-onchain-card-panel animate-pulse" style="margin-top: 15px; border-color: var(--dating-purple);">
+                <h4 style="color:#fff; margin-bottom:12px;"><i class="fa-solid fa-trophy text-amber-400"></i> توقعات كأس العالم 2026 الحية ($SINU Pools)</h4>
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); padding:10px; border-radius:12px;">
+                    <span style="font-weight:bold; color:var(--text-main);">البرازيل 🇧🇷</span>
+                    <span style="color:var(--dating-pink); font-weight:900;">ضد</span>
+                    <span style="font-weight:bold; color:var(--text-main);">الأرجنتين 🇦🇷</span>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="web3-btn-trigger" style="flex:1; background:var(--premium-gradient);" onclick="SinuWorldCupPredictionModule.submitPrediction('M1', 'Brazil')">توقع البرازيل</button>
+                    <button class="web3-btn-trigger" style="flex:1; background:linear-gradient(135deg, var(--dating-purple) 0%, #7624d9 100%);" onclick="SinuWorldCupPredictionModule.submitPrediction('M1', 'Argentina')">توقع الأرجنتين</button>
+                </div>
+            </div>
+        `;
+    }
+};
+
+/**
+ * ==========================================================================
+ * 11. محرك المؤثرات البصرية والفيزياء الفاخرة (PREMIUM PARTICLES PHYSICS ENGINE)
+ * ==========================================================================
+ */
+
+/**
+ * توليد تأثيرات بصرية متفجرة وجميلة وطائرة للأيقونات والرموز التعبيرية عند إرسال الهدايا لضمان فخامة الموقع
+ * @param {string} emoji - الرمز التعبيري المراد تطييره وتفجيره على الشاشة
+ */
+function triggerSpecialPremiumVisualEffects(emoji) {
+    const totalParticlesCount = emoji === "🚀" ? 15 : 6;
+    const bodyViewportContainer = document.body;
+
+    for (let index = 0; index < totalParticlesCount; index++) {
+        const visualParticleNode = document.createElement('div');
+        visualParticleNode.className = 'floating-overlay-emoji';
+        visualParticleNode.innerText = emoji;
+        
+        // إعطاء جزيئات المتفجرات مواقع عشوائية في أسفل شاشة الهاتف
+        const randomHorizontalLeftOffset = Math.random() * 80 + 10; 
+        const randomScaleFactor = Math.random() * 0.6 + 0.6;
+        const randomAnimationDuration = Math.random() * 1.5 + 2.0;
+
+        visualParticleNode.style.left = `${randomHorizontalLeftOffset}%`;
+        visualParticleNode.style.fontSize = `${randomScaleFactor * 3}rem`;
+        visualParticleNode.style.bottom = "-60px";
+        visualParticleNode.style.animation = `premiumFloatUpEffect ${randomAnimationDuration}s cubic-bezier(0.1, 0.8, 0.3, 1) forwards`;
+        
+        // إذا كان المقذوف هو صاروخ SINU الفاخر، نضيف تأثيراً متوهجاً خلفياً مرعباً
+        if (emoji === "🚀") {
+            visualParticleNode.style.filter = "drop-shadow(0 0 20px #ff6584) drop-shadow(0 0 40px #ae52ff)";
+        }
+
+        bodyViewportContainer.appendChild(visualParticleNode);
+
+        // تنظيف وحذف العنصر البرمجي من الذاكرة فور انتهاء الأنيميشن لعدم بطء المتصفح
+        setTimeout(() => {
+            visualParticleNode.remove();
+        }, randomAnimationDuration * 1000);
+    }
+}
+
+/**
+ * ==========================================================================
+ * 12. محرك التحكم بواجهة المستخدم والتناقل السفلي (DOM NAVIGATION & UI MANAGER)
+ * ==========================================================================
+ */
+
+/**
+ * تهيئة وإدارة التبديل الحركي الفاخر بين نوافذ شاشة الموبايل المتجاوبة خمسة زون
+ */
+function initializeNavigationViewportTabsEngine() {
+    const bottomNavActionItems = document.querySelectorAll(".app-bottom-navigation-bar .nav-item");
+    const structuralAppPanes = document.querySelectorAll(".app-viewports-scroller .app-pane");
+
+    if (bottomNavActionItems.length === 0) {
+        SinuErrorLoggerEngine.logWarning("UIManager_Nav", "No target navigation action items discovered in DOM layout.");
+        return;
+    }
+
+    bottomNavActionItems.forEach(navigationButtonNode => {
+        navigationButtonNode.addEventListener("click", () => {
+            const targetedPaneAttributeId = navigationButtonNode.getAttribute("data-target-pane");
+            if (!targetedPaneAttributeId) return;
+
+            console.log(`🧭 [UI Navigation] جاري الانتقال الفاخر إلى واجهة اللوحة: ${targetedPaneAttributeId}`);
+            activeDashboardTabId = targetedPaneAttributeId;
+
+            // 1. إزالة كلاس النشاط والتوثيق من جميع أزرار الهيدر والفوتر السفلي
+            bottomNavActionItems.forEach(button => button.classList.remove("active"));
+            
+            // 2. إخفاء كل لوحات الشاشات الخمس برفق حركي
+            structuralAppPanes.forEach(pane => {
+                pane.style.display = "none";
+                pane.style.opacity = "0";
+            });
+
+            // 3. تفعيل وإضاءة الزر الذي تم النقر عليه بنظام النيون الفاخر
+            navigationButtonNode.classList.add("active");
+            
+            // 4. إظهار الشاشة المستهدفة فوراً وتنشيط دوالها الخاصة
+            const targetPaneDOMNode = document.getElementById(targetedPaneAttributeId);
+            if (targetPaneDOMNode) {
+                targetPaneDOMNode.style.display = "block";
+                // أنيميشن ناعم لتأكيد الدخول
+                setTimeout(() => {
+                    targetPaneDOMNode.style.opacity = "1";
+                }, 40);
+
+                // ميكانيكية خاصة: إذا دخل المستخدم لوحة البث المباشر، نفتح الشات فورا، وإذا خرج نغلق الكاميرا تلقائياً
+                if (targetedPaneAttributeId === "live-pane") {
+                    console.log("🍿 دخل شاشة البث المباشر الفاخر.");
+                } else {
+                    // تفكيك الكاميرا إذا خرج لإنقاذ موارد هاتف المستخدم
+                    terminateBroadcasterHardwareWebcam();
+                }
+                
+                // تشغيل شاشة كأس العالم المدمجة إذا دخل لوحة الألعاب
+                if (targetedPaneAttributeId === "games-pane" || targetedPaneAttributeId === "predictions-pane") {
+                    SinuWorldCupPredictionModule.renderMatchesDashboard();
+                }
+            }
+        });
+    });
+}
+
+/**
+ * ==========================================================================
+ * 13. الدالات المساعدة وحقن النوافذ المنبثقة (COMPREHENSIVE UTILITIES HELPER)
+ * ==========================================================================
+ */
+
+function toggleElementVisibility(cssSelector, shouldShow) {
+    const domNode = document.querySelector(cssSelector);
+    if (domNode) {
+        domNode.style.display = shouldShow ? "flex" : "none";
+    }
+}
+
+function updateDOMWalletState(isConnected, walletHexAddress) {
+    const labelTextNode = document.getElementById("wallet-connection-status-label");
+    if (labelTextNode) {
+        if (isConnected && walletHexAddress) {
+            labelTextNode.innerText = `متصل: ${walletHexAddress.substring(0,6)}...${walletHexAddress.substring(walletHexAddress.length-4)}`;
+        } else {
+            labelTextNode.innerText = "غير متصل - اربط المحفظة";
+        }
+    }
+}
+
+function showFullScreenLoadingOverlay(loadingMessageText) {
+    let overlayNode = document.getElementById("sinu-premium-loading-overlay");
+    if (!overlayNode) {
+        overlayNode = document.createElement('div');
+        overlayNode.id = "sinu-premium-loading-overlay";
+        overlayNode.style.position = "fixed";
+        overlayNode.style.inset = "0";
+        overlayNode.style.background = "rgba(5, 2, 4, 0.95)";
+        overlayNode.style.backdropFilter = "blur(15px)";
+        overlayNode.style.zIndex = "999999";
+        overlayNode.style.display = "flex";
+        overlayNode.style.flexDirection = "column";
+        overlayNode.style.alignItems = "center";
+        overlayNode.style.justifyContent = "center";
+        overlayNode.style.color = "#fff";
+        overlayNode.style.fontFamily = "Cairo, sans-serif";
+        overlayNode.innerHTML = `
+            <div class="radar-core-scanner" style="width:70px; height:70px; margin-bottom:15px;">
+                <i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem; color:#fff;"></i>
+            </div>
+            <p id="sinu-loading-overlay-text-node" style="font-weight:bold; font-size:1rem; text-align:center; padding:0 20px;">${loadingMessageText}</p>
+        `;
+        document.body.appendChild(overlayNode);
+    } else {
+        updateFullScreenLoadingOverlayStatus(loadingMessageText);
+        overlayNode.style.display = "flex";
+    }
+}
+
+function updateFullScreenLoadingOverlayStatus(updatedText) {
+    const textNode = document.getElementById("sinu-loading-overlay-text-node");
+    if (textNode) textNode.innerText = updatedText;
+}
+
+function hideFullScreenLoadingOverlay() {
+    const overlayNode = document.getElementById("sinu-premium-loading-overlay");
+    if (overlayNode) overlayNode.style.display = "none";
+}
+
+function escapeHtmlMarkup(unsafeRawTextString) {
+    return unsafeRawTextString
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
+
+function openProfilePreviewModal(walletAddressAccount) {
+    const modalBackdropSurface = document.querySelector(".profile-preview-modal-backdrop");
+    if (!modalBackdropSurface || !coreDatabaseInstance) return;
+
+    const short = `${walletAddressAccount.substring(0, 8)}...${walletAddressAccount.substring(walletAddressAccount.length - 6)}`;
     
-    // وضع الإيموجي في مكان أفقي عشوائي أسفل شاشة الموبايل ليطير للأعلى كـ تيك توك
-    const randomHorizontalPosition = Math.random() * 80 + 10;
-    floatingElement.style.left = `${randomHorizontalPosition}%`;
-    
-    overlayContainer.appendChild(floatingElement);
-    
-    // إزالة العنصر برمجياً من الذاكرة فور انتهاء الحركة لحماية كفاءة الهاتف
-    setTimeout(() => {
-        floatingElement.remove();
+    // سحب رتبة المحفظة المنقرع عليها حياً لتفخيم كرت العرض
+    coreDatabaseInstance.ref('users/' + walletAddressAccount.toLowerCase()).once('value').then((snapshot) => {
+        let currentBalanceText = "0 SINU";
+        let userRoleLabel = "عضو شبكة متألق";
+        
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            currentBalanceText = `${(data.balance || 0).toLocaleString()} SINU`;
+            if (data.role === "owner") userRoleLabel = "👑 مؤسس شبكة SINU ومطور العقد";
+            if (data.role === "admin") userRoleLabel = "🛡️ مشرف المنصة العام";
+        }
+
+        modalBackdropSurface.innerHTML = `
+            <div class="modal-surface-card" style="border-color: var(--border-color); relative">
+                <div class="radar-core-scanner" style="width:60px; height:60px; margin:0 auto 15px auto; background:var(--premium-gradient)">
+                    <i class="fa-solid fa-user-secret" style="font-size:1.4rem; color:#fff;"></i>
+                </div>
+                <h3 style="color:#fff; margin-bottom:4px; font-size:1.1rem; word-break:break-all;">${short}</h3>
+                <p style="color:var(--dating-pink); font-size:0.8rem; font-weight:bold; margin-bottom:15px;">${userRoleLabel}</p>
+                
+                <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:16px; margin-bottom:20px; border:1px solid rgba(255,101,132,0.1)">
+                    <span style="font-size:0.78rem; color:var(--text-muted); display:block; margin-bottom:4px;">الرصيد السحابي المعتمد</span>
+                    <strong style="font-size:1.2rem; color:var(--gold); font-weight:900;">${currentBalanceText}</strong>
+                </div>
+
+                <button class="auth-action-trigger-button" style="padding:10px; font-size:0.85rem; background:rgba(255,255,255,0.05); border:1px solid var(--border-color); color:#fff; box-shadow:none;" onclick="closeProfilePreviewModal()">إغلاق الكرت الفاخر</button>
+            </div>
+        `;
+        modalBackdropSurface.style.display = "flex";
+    });
+}
+
+function closeProfilePreviewModal() {
+    const modalBackdropSurface = document.querySelector(".profile-preview-modal-backdrop");
+    if (modalBackdropSurface) modalBackdropSurface.style.display = "none";
+}
+
+function initializeLiveViewerCounterMock() {
+    const countLabelElement = document.querySelector(".live-status-pill-indicator");
+    if (!countLabelElement) return;
+
+    liveViewerCountCounter = Math.floor(Math.random() * 45) + 120; // توليد أرقام تفاعلية فورية
+    countLabelElement.innerText = `🔴 مـباشـر | ${liveViewerCountCounter} مـشـاهـد`;
+
+    setInterval(() => {
+        if (localStreamInstance) {
+            const variance = Math.floor(Math.random() * 5) - 2;
+            liveViewerCountCounter += variance;
+            countLabelElement.innerText = `🔴 مـباشـر | ${liveViewerCountCounter} مـشـاهـد`;
+        }
     }, 4000);
 }
 
 /**
  * ==========================================================================
- * SECTION 7: محرك تشغيل وربط الملحقات والألعاب الأربعة (iFrame Launcher)
+ * 14. التأسيس الشامل وبدء التوصيل فور جهوزية الواجهة (FINAL CONSTRUCT INITIALIZER)
  * ==========================================================================
  */
-function launchSinuIntegratedGame(gameKey) {
-    const gameData = sinuIntegratedGamesRegistry[gameKey];
-    if (!gameData) return;
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("🚀 [SINU MATRIX ENGINE] تم استدعاء وتحميل عتاد المحرك الفاخر بنجاح موسع ومستعد للتنفيذ الحقيقي.");
 
-    if (!currentLoggedInUser) {
-        alert("⚠️ عذراً: يجب تسجيل الدخول وتفعيل حسابك السحابي لتشغيل الألعاب!");
-        return;
-    }
+    // 1. تشغيل قنوات شات البث اللحظي الفاخر
+    establishLiveChatStreamListener();
 
-    const userBalanceRef = coreDatabaseInstance.ref(`users/${currentLoggedInUser.uid}/balance`);
-    
-    userBalanceRef.once('value').then((snapshot) => {
-        let currentBalance = snapshot.val() || 0;
-        
-        if (currentBalance < gameData.costToPlay) {
-            alert(`❌ رصيد SINU غير كافٍ للملحق! تكلفة الدخول: ${gameData.costToPlay} SINU. رصيدك: ${currentBalance} SINU`);
-            return;
-        }
+    // 2. تشغيل التناقل السفلي الاحترافي للشاشات الخمس
+    initializeNavigationViewportTabsEngine();
 
-        // الخصم وتوثيق المعاملة في لوحة البيانات السحابية لمنع التلاعب
-        let newBalance = currentBalance - gameData.costToPlay;
-        userBalanceRef.set(newBalance).then(() => {
-            
-            coreDatabaseInstance.ref(`game_tickets/${currentLoggedInUser.uid}`).push({
-                gameName: gameData.title,
-                cost: gameData.costToPlay,
-                executedAt: Date.now()
-            });
-
-            document.getElementById("uiBalanceCounterLabel").innerText = `${newBalance.toFixed(2)} SINU`;
-            
-            // حقن الـ iFrame الخاص برابط اللعبة التي أرسلتها في الـ Viewport
-            injectGameIframeIntoPane(gameData.url, gameData.title);
+    // 3. ربط أزرار بوابة الدخول لإخفاء الخانات البدائية وربط المحفظة فوراً
+    const gateLoginTriggerButton = document.querySelector(".auth-action-trigger-button");
+    if (gateLoginTriggerButton) {
+        gateLoginTriggerButton.addEventListener("click", () => {
+            connectPlatformWallet();
         });
-    }).catch(error => console.error("خطأ في فحص وتدقيق تذكرة اللعبة:", error));
-}
-
-function injectGameIframeIntoPane(targetUrl, gameTitle) {
-    const gamesPane = document.getElementById("paneGames");
-    if (!gamesPane) return;
-
-    gamesPane.innerHTML = `
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
-            <button onclick="reloadGamesDefaultDashboard()" style="background:var(--bg-input); border:none; color:var(--text-main); padding:8px 14px; border-radius:12px; font-weight:bold; cursor:pointer;"><i class="fa-solid fa-arrow-right"></i> العودة للملحقات</button>
-            <strong style="color:var(--dating-purple); font-size:0.95rem;">${gameTitle}</strong>
-        </div>
-        <div style="width:100%; height:calc(100vh - 210px); border-radius:20px; overflow:hidden; border:1px solid var(--border-color); background:#fff;">
-            <iframe src="${targetUrl}" style="width:100%; height:100%; border:none;" allow="camera; microphone; fullscreen;"></iframe>
-        </div>
-    `;
-}
-
-function reloadGamesDefaultDashboard() {
-    const gamesPane = document.getElementById("paneGames");
-    if (!gamesPane) return;
-
-    gamesPane.innerHTML = `
-        <div style="text-align: center; margin-bottom: 20px;">
-            <h3 style="font-size: 1.3rem; font-weight: 900; color: var(--text-main);"><i class="fa-solid fa-gamepad" style="color:var(--dating-pink);"></i> ألعاب وملاحق Web3 المتكاملة</h3>
-            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">انقر على أي ملحق لتشغيله مباشرة عبر رصيد عملة $SINU الموحد</p>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:20px;">
-            <div onclick="launchSinuIntegratedGame('worldCup')" style="background:var(--bg-card); border:1px solid var(--border-color); padding:16px; border-radius:20px; text-align:center; cursor:pointer; transition: 0.3s;">
-                <span style="font-size:2rem; display:block; margin-bottom:8px;">🏆</span>
-                <strong style="font-size:0.85rem; color:var(--text-main);">توقعات المونديال</strong>
-                <small style="display:block; color:var(--dating-pink); font-size:0.7rem; margin-top:4px;">تكلفة: 20 SINU</small>
-            </div>
-            <div onclick="launchSinuIntegratedGame('geniusChallenge')" style="background:var(--bg-card); border:1px solid var(--border-color); padding:16px; border-radius:20px; text-align:center; cursor:pointer; transition: 0.3s;">
-                <span style="font-size:2rem; display:block; margin-bottom:8px;">🧠</span>
-                <strong style="font-size:0.85rem; color:var(--text-main);">تحدي العباقرة</strong>
-                <small style="display:block; color:var(--dating-pink); font-size:0.7rem; margin-top:4px;">تكلفة: 15 SINU</small>
-            </div>
-            <div onclick="launchSinuIntegratedGame('domino')" style="background:var(--bg-card); border:1px solid var(--border-color); padding:16px; border-radius:20px; text-align:center; cursor:pointer; transition: 0.3s;">
-                <span style="font-size:2rem; display:block; margin-bottom:8px;">🀄</span>
-                <strong style="font-size:0.85rem; color:var(--text-main);">لعبة الدومينو</strong>
-                <small style="display:block; color:var(--dating-pink); font-size:0.7rem; margin-top:4px;">تكلفة: 10 SINU</small>
-            </div>
-            <div onclick="launchSinuIntegratedGame('wheelOfFortune')" style="background:var(--bg-card); border:1px solid var(--border-color); padding:16px; border-radius:20px; text-align:center; cursor:pointer; transition: 0.3s;">
-                <span style="font-size:2rem; display:block; margin-bottom:8px;">🎡</span>
-                <strong style="font-size:0.85rem; color:var(--text-main);">عجلة الحظ</strong>
-                <small style="display:block; color:var(--dating-pink); font-size:0.7rem; margin-top:4px;">تكلفة: 25 SINU</small>
-            </div>
-        </div>
-    `;
-}
-
-/**
- * ==========================================================================
- * SECTION 8: محرك بوابة المصادقة الثنائية (Firebase Auth Framework)
- * ==========================================================================
- */
-function toggleAuthPanelMode(mode) {
-    currentAuthPanelMode = mode;
-    const btnLogin = document.getElementById("btnModeLogin");
-    const btnRegister = document.getElementById("btnModeRegister");
-    const wrapperFields = document.getElementById("wrapperFieldUsername");
-
-    if (!btnLogin || !btnRegister) return;
-
-    if (mode === 'login') {
-        btnLogin.style.background = "var(--dating-pink)";
-        btnLogin.style.color = "#fff";
-        btnRegister.style.background = "transparent";
-        btnRegister.style.color = "var(--text-main)";
-        if (wrapperFields) wrapperFields.style.display = "none";
-    } else {
-        btnLogin.style.background = "transparent";
-        btnLogin.style.color = "var(--text-main)";
-        btnRegister.style.background = "var(--dating-pink)";
-        btnRegister.style.color = "#fff";
-        if (wrapperFields) wrapperFields.style.display = "flex";
-    }
-}
-
-function executeCoreAuthenticationAction() {
-    const email = document.getElementById("inputAuthEmail").value.trim();
-    const password = document.getElementById("inputAuthPassword").value.trim();
-
-    if (!email || !password) {
-        alert("⚠️ يرجى تعبئة الحقول الأساسية (البريد والرمز السري) للمصادقة!");
-        return;
     }
 
-    if (currentAuthPanelMode === 'login') {
-        coreAuthInstance.signInWithEmailAndPassword(email, password)
-            .catch(err => alert("❌ فشل الولوج: " + err.message));
-    } else {
-        const username = document.getElementById("inputAuthUsername").value.trim().toLowerCase();
-        const age = parseInt(document.getElementById("inputAuthAge").value);
-        const matchingNature = document.getElementById("selectAuthMatching").value;
-        const bio = document.getElementById("inputAuthBio").value.trim() || "عضو نشط في مجتمع SINU";
-
-        if (!username || !age || !matchingNature) {
-            alert("⚠️ يرجى ملء حقل العمر، اسم المستخدم، وتحديد طبيعة التعارف لتأمين الحساب!");
-            return;
-        }
-
-        if (age < 18) {
-            alert("❌ حظر قانوني: يجب أن يكون عمرك 18 سنة فما فوق لدخول شبكة SINU!");
-            return;
-        }
-
-        coreAuthInstance.createUserWithEmailAndPassword(email, password)
-            .then((credential) => {
-                // حفظ الهوية الكاملة في قاعدة البيانات السحابية فوراً
-                coreDatabaseInstance.ref(`users/${credential.user.uid}`).set({
-                    username: username,
-                    email: email,
-                    age: age,
-                    matchingNature: matchingNature,
-                    bio: bio,
-                    balance: 150.00, // رصيد ترحيبي مجاني بـ SINU لفتح الملحقات والألعاب
-                    xp: 10,
-                    avatar: "https://via.placeholder.com/150",
-                    isOnline: true
-                }).then(() => {
-                    alert("🎉 تهانينا! تم إنشاء حسابك المشفر بنجاح، وتم إيداع الرصيد الترحيبي!");
-                });
-            })
-            .catch(err => alert("❌ فشل التسجيل: " + err.message));
-    }
-}
-
-// تتبع ومراقبة حالة جلسة المستخدم بشكل دائم (State Persistence Listener)
-coreAuthInstance.onAuthStateChanged((user) => {
-    const authBackdrop = document.getElementById("coreAuthBackdrop");
-    const mainDashboard = document.getElementById("coreAppMainDashboard");
-
-    if (user) {
-        activeUserSessionProfile = user;
-        if (authBackdrop) authBackdrop.style.display = "none";
-        if (mainDashboard) mainDashboard.style.display = "block";
-        
-        // تعيين حالة الاتصال بالإنترنت حية على السيرفر
-        coreDatabaseInstance.ref(`users/${user.uid}/isOnline`).set(true);
-        coreDatabaseInstance.ref(`users/${user.uid}/isOnline`).onDisconnect().set(false);
-
-        // تشغيل المحركات السحابية وتحديث الأرصدة والألعاب
-        initializeRealtimeSinuEngine(user.uid);
-        generateProfessionalGiftsMatrix();
-        reloadGamesDefaultDashboard();
-    } else {
-        activeUserSessionProfile = null;
-        myCachedProfileDataRecord = null;
-        if (authBackdrop) authBackdrop.style.display = "flex";
-        if (mainDashboard) mainDashboard.style.display = "none";
-    }
-});
-
-function initializeRealtimeSinuEngine(uid) {
-    // 1. الاستماع الدائم لتغيرات الملف الشخصي والرصيد في قاعدة البيانات
-    coreDatabaseInstance.ref(`users/${uid}`).on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            myCachedProfileDataRecord = data;
-            
-            const balanceLabel = document.getElementById("uiBalanceCounterLabel");
-            const profileUserLabel = document.getElementById("uiSidebarProfileUsername");
-            const profileBioLabel = document.getElementById("uiSidebarProfileBioText");
-
-            if (balanceLabel) balanceLabel.innerText = `${(data.balance || 0).toFixed(2)} SINU`;
-            if (profileUserLabel) profileUserLabel.innerText = `@${data.username}`;
-            if (profileBioLabel) profileBioLabel.innerText = data.bio;
-        }
-    });
-
-    // 2. محرك فرز وتوليد بطاقات رادار الأصدقاء النشطين تلقائياً حياً
-    coreDatabaseInstance.ref('users').on('value', (snapshot) => {
-        let onlineCounter = 0;
-        const container = document.getElementById("uiActiveOnlineUsersContainer");
-        if (!container) return;
-        
-        container.innerHTML = "";
-
-        snapshot.forEach((child) => {
-            const userData = child.val();
-            // تصفية وعرض المستخدمين المتصلين حياً واستثناء حسابك الشخصي
-            if (userData.isOnline && child.key !== uid) {
-                onlineCounter++;
-                container.innerHTML += `
-                    <div onclick="openUserProfileViewModal('${child.key}', '${userData.username}', '${userData.bio}')" style="background:var(--bg-card); border:1px solid var(--border-color); padding:14px; border-radius:18px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:0.2s;">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div style="width:12px; height:12px; background:var(--success); border-radius:50%; box-shadow: 0 0 10px var(--success);"></div>
-                            <div>
-                                <strong style="color:var(--text-main); font-size:0.92rem; display:block;">@${userData.username}</strong>
-                                <small style="color:var(--text-muted); font-size:0.75rem;">${userData.matchingNature} • العمر: ${userData.age}</small>
-                            </div>
-                        </div>
-                        <span style="font-size:0.8rem; background:rgba(255,101,132,0.1); color:var(--dating-pink); padding:4px 10px; border-radius:10px; font-weight:bold;">اتصال حي ⚡</span>
-                    </div>
-                `;
+    // 4. ربط الضغط على المحفظة العلوية لفتح صندوق الشحن والإيداع أونشين عبر العقد
+    const premiumHeaderWalletBadge = document.querySelector(".balance-pill-badge");
+    if (premiumHeaderWalletBadge) {
+        premiumHeaderWalletBadge.addEventListener("click", () => {
+            const rawInputCoins = prompt("💰 مرحباً بك في بوابة الـ Web3 لشحن رصيد $SINU السحابي مجاناً!\n\nأدخل كمية عملات SINU التي ترغب بسحبها من محفظتك وإيداعها في العقد لتغذية حسابك السحابي:");
+            if (rawInputCoins) {
+                const cleanAmount = parseFloat(rawInputCoins);
+                depositSinuToContract(cleanAmount);
             }
         });
+    }
+
+    // 5. ربط النقر على دائرة الرادار المركزي لبدء الكاميرا والميكروفون حياً فوراً
+    const centralRadarCoreScanner = document.querySelector(".radar-core-scanner");
+    if (centralRadarCoreScanner) {
+        centralRadarCoreScanner.addEventListener("click", () => {
+            alert("⏳ جاري فحص الأجهزة واستدعاء عتاد الكاميرا لبدء بثك المباشر الفخم... الرجاء الموافقة على صلاحيات متصفحك.");
+            triggerBroadcasterHardwareWebcam();
+        });
+    }
+
+    // 6. ربط حقول إرسال رسائل الشات التفاعلي العادي لتسجيلها سحابياً
+    const structuralChatInputField = document.querySelector(".private-chat-input-row input");
+    const structuralChatSendButton = document.querySelector(".private-chat-input-row button");
+    
+    if (structuralChatSendButton && structuralChatInputField) {
+        const executeMessageDispatch = () => {
+            if (!currentUserWallet) {
+                alert("⚠️ الرجاء ربط محفظتك الرقمية عبر بوابة الدخول أولاً لتتمكن من الكتابة في الشات!");
+                return;
+            }
+            sendLiveChatMessageEngine(currentUserWallet, structuralChatInputField.value);
+            structuralChatInputField.value = ""; // تفريغ الخانة فوراً
+        };
+
+        structuralChatSendButton.addEventListener("click", executeMessageDispatch);
         
-        const counterTag = document.getElementById("radarOnlineCounter");
-        if (counterTag) counterTag.innerText = `${onlineCounter} نشط حياً الآن`;
-    });
-
-    // 3. محرك جلب التغذية العامة ومشاركات المنصة اللحظية
-    coreDatabaseInstance.ref('global_posts').limitToLast(25).on('value', (snapshot) => {
-        const msgContainer = document.getElementById("uiMainMessagesContainer");
-        if (!msgContainer) return;
-        msgContainer.innerHTML = "";
-
-        let postsArray = [];
-        snapshot.forEach(child => {
-            postsArray.unshift({ id: child.key, ...child.val() });
+        // دعم الإرسال الفاخر عند الضغط على زر Enter في كيبورد الموبايل
+        structuralChatInputField.addEventListener("keydown", (keyEvent) => {
+            if (keyEvent.key === "Enter") {
+                executeMessageDispatch();
+            }
         });
-
-        postsArray.forEach(post => {
-            msgContainer.innerHTML += `
-                <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:14px; border-radius:20px; margin-bottom:10px;">
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-                        <div style="width:35px; height:35px; background:var(--dating-pink); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:bold;">${post.author.substring(0,2).toUpperCase()}</div>
-                        <div>
-                            <strong style="font-size:0.85rem; color:var(--text-main); display:block;">@${post.author}</strong>
-                            <small style="font-size:0.65rem; color:var(--text-muted);">${new Date(post.timestamp).toLocaleTimeString('ar-EG')}</small>
-                        </div>
-                    </div>
-                    <p style="font-size:0.88rem; color:var(--text-main); line-height:1.5;">${post.text}</p>
-                </div>
-            `;
-        });
-    });
-}
-
-function submitActiveMessageFromToolbar() {
-    const inputField = document.getElementById("inputMainPrimaryTextField");
-    if (!inputField || !activeUserSessionProfile) return;
-
-    const messageContent = inputField.value.trim();
-    if (messageContent === "") return;
-
-    const authorName = myCachedProfileDataRecord ? myCachedProfileDataRecord.username : "عضو";
-
-    coreDatabaseInstance.ref('global_posts').push({
-        author: authorName,
-        text: messageContent,
-        timestamp: Date.now()
-    }).then(() => {
-        inputField.value = "";
-    });
-}
-
-function generateProfessionalGiftsMatrix() {
-    const container = document.getElementById("uiGiftsMatrixGridContainer");
-    if (!container) return;
-    container.innerHTML = "";
-
-    // حقن وتوليد الهدايا الفاخرة برمجياً داخل واجهة المتجر
-    Object.keys(sinuGiftsStoreRegistry).forEach(key => {
-        const item = sinuGiftsStoreRegistry[key];
-        container.innerHTML += `
-            <div onclick="sendGiftToLiveBroadcaster('${key}')" style="background:var(--bg-input); border:1px solid transparent; border-radius:14px; padding:8px 4px; text-align:center; cursor:pointer; transition:0.2s;" class="matrix-gift-item">
-                <span style="font-size:1.6rem; display:block; margin-bottom:2px;">${item.icon}</span>
-                <strong style="font-size:0.75rem; display:block; color:var(--text-main); white-space:nowrap;">${item.name}</strong>
-                <small style="color:var(--dating-purple); font-size:0.68rem; font-weight:bold;">${item.price} SINU</small>
-            </div>
-        `;
-    });
-}
-
-/**
- * ==========================================================================
- * SECTION 9: محرك التناقل الحركي والملاحة السلسة للموبايل (Mobile Navigation)
- * ==========================================================================
- */
-function switchMobilePane(targetPaneId, clickedButton) {
-    currentActiveMobilePaneId = targetPaneId;
-    
-    // إخفاء كافة كتل العرض الأساسية بالتطبيق
-    const allPanes = document.querySelectorAll(".app-pane");
-    allPanes.forEach(pane => pane.style.display = "none");
-
-    // تفعيل وإظهار اللوحة المستهدفة برمجياً
-    const activePane = document.getElementById(targetPaneId);
-    if (activePane) activePane.style.display = "block";
-
-    // تصفير وتحديث وضعية أزرار شريط التنقل السفلي المطور
-    const allNavItems = document.querySelectorAll(".nav-item");
-    allNavItems.forEach(item => {
-        item.style.color = "var(--text-muted)";
-        item.style.transform = "scale(1)";
-    });
-    
-    if (clickedButton) {
-        clickedButton.style.color = "var(--dating-pink)";
-        clickedButton.style.transform = "scale(1.08)";
     }
-}
 
-function openUserProfileViewModal(uid, username, bio) {
-    currentSelectedChatPartner = uid;
-    
-    const modal = document.getElementById("userProfileViewModal");
-    const modalName = document.getElementById("modalUsername");
-    const modalBio = document.getElementById("modalUserBio");
-
-    if (modal && modalName && modalBio) {
-        modalName.innerText = `@${username}`;
-        modalBio.innerText = bio || "لا توجد نبذة تعريفية مضافة لهذا الحساب.";
-        modal.style.display = "flex";
-    }
-}
-
-function executeSinuDirectTip() {
-    if (!currentSelectedChatPartner) return;
-    // تخصيص دفعة مالية سريعة ومباشرة بقيمة 10 عملات SINU عند نقر بطاقة العضو
-    sendGiftToLiveBroadcaster('rose'); 
-    document.getElementById("userProfileViewModal").style.display = "none";
-}
-
-/**
- * ==========================================================================
- * SECTION 10: محرك وبوابة الـ Web3 المتقدمة لإيداع وسحب العقود (Web3 Bridge)
- * ==========================================================================
- */
-async function connectWeb3WalletBridge() {
-    if (typeof window.ethereum !== 'undefined') {
-        try {
-            alert("جاري الاتصال بمحفظة MetaMask المعتمدة...");
-            
-            // طلب الاتصال بحسابات المحفظة
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            activeConnectedWalletAddress = accounts[0];
-            
-            document.getElementById('uiConnectedWalletAddressTag').innerText = 
-                activeConnectedWalletAddress.substring(0, 6) + "..." + activeConnectedWalletAddress.substring(38);
-
-            // بناء كائنات مراجع مكتبة Ethers لربط العقود على البلوكشين حياً
-            web3BrowserProvider = new ethers.providers.Web3Provider(window.ethereum);
-            web3SignerInstance = web3BrowserProvider.getSigner();
-
-            kriptoChatContractInstance = new ethers.Contract(KRIPTO_CHAT_ADDRESS, KRIPTO_CHAT_ABI, web3SignerInstance);
-            sinuTokenContractInstance = new ethers.Contract(SINU_TOKEN_ADDRESS, SINU_TOKEN_ABI, web3SignerInstance);
-
-            alert("🌐 تم ربط المحفظة بنجاح مع شبكة البلوكشين! نقوم الآن بجلب أرصدة العقود الحية...");
-            fetchOnchainContractBalancesLive();
-
-        } catch (err) {
-            console.error("فشل ربط بوابة الميتا ماسك والويب 3:", err);
-            alert("❌ فشل الاتصال بالمحفظة: " + err.message);
+    // 7. ربط مصفوفة زري النيون في متجر الهدايا الفاخر بناءً على خواص الـ HTML المضافة من قبلك
+    document.body.addEventListener("click", (clickEvent) => {
+        const targetedGiftItemNode = clickEvent.target.closest("[data-gift-cost]");
+        if (targetedGiftItemNode) {
+            const parsedCost = parseInt(targetedGiftItemNode.getAttribute("data-gift-cost")) || 5;
+            const fallbackKeyId = targetedGiftItemNode.getAttribute("data-gift-id") || "rose";
+            processGiftSendingIntent(fallbackKeyId);
         }
-    } else {
-        alert("⚠️ لم يتم العثور على محفظة Web3 مدمجة بالمتصفح! يرجى فتح الموقع من داخل متصفح MetaMask المطور.");
-    }
-}
-
-async function fetchOnchainContractBalancesLive() {
-    if (!kriptoChatContractInstance || !sinuTokenContractInstance || !activeConnectedWalletAddress) return;
-
-    try {
-        // قراءة الرصيد الأساسي لعملة SINU داخل محفظة المستخدم على الشبكة مباشرة
-        const tokenBalanceWei = await sinuTokenContractInstance.balanceOf(activeConnectedWalletAddress);
-        document.getElementById('onchainWalletBalanceLabel').innerText = 
-            parseFloat(ethers.utils.formatEther(tokenBalanceWei)).toFixed(2);
-
-        // قراءة الرصيد الفعلي المحجوز والمدخر داخل العقد الذكي للتطبيق
-        const contractInAppBalanceWei = await kriptoChatContractInstance.getInAppBalance(activeConnectedWalletAddress);
-        document.getElementById('onchainContractInAppBalanceLabel').innerText = 
-            parseFloat(ethers.utils.formatEther(contractInAppBalanceWei)).toFixed(2);
-
-    } catch (err) {
-        console.error("فشل قراءة أرصدة البلوكشين الذكية حياً:", err);
-    }
-}
-
-async function executeWeb3DepositSinuToContract() {
-    const amountStr = document.getElementById('inputDepositAmountWeiField').value.trim();
-    if (!amountStr || !kriptoChatContractInstance || !sinuTokenContractInstance) { 
-        alert('⚠️ يرجى التأكد من ربط المحفظة أولاً وإدخال كمية الشحن الرقمية المطلوبة!'); 
-        return; 
-    }
-
-    try {
-        const amountWei = ethers.utils.parseEther(amountStr);
-        alert('⏳ انتظر.. نقوم حالياً بعمل تفعيل وتفويض (Approve) للعملة على شبكة البلوكشين الذكية...');
-        
-        // 1. معاملة التفويض على البلوكشين
-        const txApprove = await sinuTokenContractInstance.approve(KRIPTO_CHAT_ADDRESS, amountWei);
-        await txApprove.wait();
-
-        alert('✅ نجح التفويض! جاري تنفيذ معاملة الإيداع والشحن الفورية داخل عقد SINU الذكي للرصيد...');
-        
-        // 2. معاملة الإيداع الفعلي في العقد
-        const txDeposit = await kriptoChatContractInstance.depositSinu(amountWei);
-        await txDeposit.wait();
-
-        alert('🎉 تهانينا الفائقة! تم شحن محفظة العقد بنجاح على شبكة البلوكشين. نقوم الآن بتحديث أرصدة الواجهة...');
-        fetchOnchainContractBalancesLive();
-
-    } catch (err) {
-        console.error("فشل شحن رصيد المحفظة On-chain:", err);
-        alert("❌ فشلت معاملة البلوكشين: " + err.message);
-    }
-}
-
-// تعيين تشغيل الملاحة التلقائية للتبويب الأول للرادار فور تحميل المتصفح
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("🚀 [SINU CORE SYSTEM ACTIVE] المحرك يعمل الآن بكامل قوته التنافسية لـ GitHub.");
+    });
 });
