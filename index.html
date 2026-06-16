@@ -20,9 +20,11 @@
 
     <div class="live-screen-overlay-container" id="globalLiveScreenOverlay"></div>
 
+<!-- بوابة الدخول والتسجيل التكتيكية المحدثة للهواتف -->
     <div class="auth-backdrop" id="coreAuthBackdrop">
         <div class="auth-panel-card">
             
+            <!-- الهوية البصرية واللوجو المدمج للمنصة -->
             <div style="text-align: center; margin-bottom: 15px;">
                 <div style="display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 10px;">
                     <img src="1781612384197.png" alt="SINU Site Logo" style="width: 55px; height: 55px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 15px rgba(255, 101, 132, 0.4); border: 1px solid rgba(255, 101, 132, 0.2);">
@@ -31,34 +33,54 @@
                     </h2>
                 </div>
                 <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
-                    المحرك الاجتماعي الاحترافي لعملة $SINU وتتطبيقات الـ Web3 المتقدمة 🌐
+                    المحرك الاجتماعي الاحترافي لعملة $SINU وتطبيقات الـ Web3 المتقدمة 🌐
                 </p>
             </div>
             
-            <div style="display: flex; gap: 10px; background: var(--bg-input); padding: 5px; border-radius: 16px;">
+            <!-- أزرار التبديل الحركية بين التسجيل والولوج -->
+            <div style="display: flex; gap: 10px; background: var(--bg-input); padding: 5px; border-radius: 16px; margin-bottom: 15px;">
                 <button onclick="toggleAuthPanelMode('login')" style="flex:1; padding:12px; background:var(--dating-pink); border:none; color:#fff; border-radius:12px; cursor:pointer; font-weight:bold; transition: var(--transition-smooth);" id="btnModeLogin">تسجيل الدخول</button>
                 <button onclick="toggleAuthPanelMode('register')" style="flex:1; padding:12px; background:transparent; border:none; color:var(--text-main); cursor:pointer; font-weight:bold; transition: var(--transition-smooth);" id="btnModeRegister">إنشاء حساب جديد</button>
             </div>
 
-            <input type="email" id="inputAuthEmail" placeholder="البريد الإلكتروني المعتمد">
-            <input type="password" id="inputAuthPassword" placeholder="رمز المرور الآمن (6 خانات فأكثر)">
-            
-            <div id="wrapperFieldUsername" style="display: none; flex-direction: column; gap: 15px;">
-                <input type="text" id="inputAuthUsername" placeholder="اسم المستخدم الفريد (بالأحرف الصغيرة)">
-                <textarea id="inputAuthBio" placeholder="اكتب نبذتك التعريفية في مجتمع SINU..." rows="2" style="resize: none;"></textarea>
+            <!-- حقول الإدخال المشتركة (تظهر دائماً) -->
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <input type="email" id="inputAuthEmail" placeholder="البريد الإلكتروني المعتمد">
+                <input type="password" id="inputAuthPassword" placeholder="رمز المرور الآمن (6 خانات فأكثر)">
                 
-                <div style="display: flex; align-items: center; gap: 15px; background: var(--bg-input); padding: 14px; border-radius: 16px; border: 1px solid var(--border-color);">
-                    <div id="previewUploaderAvatarContainer" style="width: 55px; height: 55px; border-radius: 50%; background: #e8e0e2; border: 2px dashed var(--dating-pink); display: flex; align-items: center; justify-content: center; overflow: hidden;">👤</div>
-                    <label style="background: var(--dating-purple); color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 0.82rem; cursor: pointer; font-weight: bold;">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> رفع الصورة الشخصية
-                        <input type="file" id="inputAvatarFile" accept="image/*" onchange="processSelectedAvatarImage(this)" style="display: none;">
-                    </label>
-                </div>
-            </div>
+                <!-- الحقول المتقدمة المخصصة حصرياً لإنشاء الحساب والمواعدة -->
+                <div id="wrapperFieldUsername" style="display: none; flex-direction: column; gap: 12px; width: 100%;">
+                    <input type="text" id="inputAuthUsername" placeholder="اسم المستخدم الفريد (بالأحرف الصغيرة)">
+                    
+                    <!-- حقل تأكيد العمر لمنع من هم دون الـ 18 سنة -->
+                    <input type="number" id="inputAuthAge" placeholder="العمر الحقيقي (يجب أن يكون 18 سنة فما فوق)" min="18">
+                    
+                    <!-- قائمة تحديد الجنس والاهتمام العاطفي للتعارف -->
+                    <select id="selectAuthMatching" style="width: 100%; padding: 12px; border-radius: 14px; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main); font-family: inherit; font-size: 0.9rem; cursor: pointer; outline: none;">
+                        <option value="" disabled selected style="color: var(--text-muted);">اختر طبيعة البحث والتعارف...</option>
+                        <option value="شاب يبحث عن فتاة">👨 🔀 👩 شاب يبحث عن فتاة</option>
+                        <option value="فتاة تبحث عن شاب">👩 🔀 👨 فتاة تبحث عن شاب</option>
+                    </select>
 
-            <button class="btn-tactical-action" id="btnAuthActionExecute" onclick="executeCoreAuthenticationAction()">تأكيد الهوية وتوصيل العقد 🔑</button>
+                    <textarea id="inputAuthBio" placeholder="اكتب نبذتك التعريفية في مجتمع SINU..." rows="2" style="resize: none;"></textarea>
+                    
+                    <!-- لوحة رفع ومعاينة الصورة الشخصية الدائرية -->
+                    <div style="display: flex; align-items: center; gap: 15px; background: var(--bg-input); padding: 14px; border-radius: 16px; border: 1px solid var(--border-color);">
+                        <div id="previewUploaderAvatarContainer" style="width: 55px; height: 55px; border-radius: 50%; background: #e8e0e2; border: 2px dashed var(--dating-pink); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">👤</div>
+                        <label style="background: var(--dating-purple); color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 0.82rem; cursor: pointer; font-weight: bold; flex-grow: 1; text-align: center;">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> رفع الصورة الشخصية
+                            <input type="file" id="inputAvatarFile" accept="image/*" onchange="processSelectedAvatarImage(this)" style="display: none;">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- زر الإرسال والتفعيل الموحد -->
+                <button class="btn-tactical-action" onclick="executeCoreAuthenticationAction()" style="margin-top: 10px; width: 100%; padding: 14px; border-radius: 14px; font-weight: bold;">تأكيد والولوُج الفوري 🚀</button>
+            </div>
         </div>
     </div>
+
+
 
     <div class="app-main-dashboard" id="coreAppMainDashboard" style="display: none;">
         
