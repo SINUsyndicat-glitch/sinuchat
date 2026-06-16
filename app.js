@@ -9,7 +9,10 @@
  * SECTION 1: التهيئة الفنية وإعدادات الخادم السحابي (Firebase Configuration)
  * ==========================================================================
  * تم تدقيق بيانات الربط السحابي ومزامنتها مع مشروعك الأصلي لضمان ثبات الجلسات.
- */
+ // ==========================================================================
+// 🔥 [SINU ENGINE] CORE FIREBASE INTEGRATION (v8 COMPAT)
+// ==========================================================================
+
 const firebaseConfig = {
     apiKey: "AIzaSyAjANzHrD-JEEN_4DVIY705ECcJTvl4lQk",
     authDomain: "kriptochat-bf77a.firebaseapp.com",
@@ -33,6 +36,87 @@ try {
 // مراجع أدوات التحكم السحابية المعتمدة
 const coreAuthInstance = firebase.auth();
 const coreDatabaseInstance = firebase.database();
+
+// ==========================================================================
+// 💎 دمج التحكم بالرصيد والشات الفاخر حياً عبر السحاب
+// ==========================================================================
+
+/**
+ * 1. دالة تحديث رصيد محفظة مستخدم في Firebase لتجنب رسوم الغاز المتكررة
+ */
+function updateSinuBalance(walletAddress, amount) {
+    if (!walletAddress) return;
+    
+    // إزالة الحروف الكبيرة لتوحيد العناوين في قاعدة البيانات
+    const userKey = walletAddress.toLowerCase(); 
+    
+    coreDatabaseInstance.ref('users/' + userKey).update({
+        balance: amount,
+        lastUpdated: firebase.database.ServerValue.TIMESTAMP
+    })
+    .then(() => console.log(`💰 [Firebase] تم تحديث رصيد المحفظة ${userKey} بنجاح.`))
+    .catch(err => console.error("❌ خطأ سحابي في تحديث الرصيد:", err));
+}
+
+/**
+ * 2. الاستماع اللحظي لرصيد المستخدم لتحديث "الخانات الفاخرة" في واجهة الموبايل تلقائياً
+ */
+function listenToUserBalance(walletAddress) {
+    if (!walletAddress) return;
+    const userKey = walletAddress.toLowerCase();
+
+    coreDatabaseInstance.ref('users/' + userKey + '/balance').on('value', (snapshot) => {
+        const currentBalance = snapshot.val() || 0;
+        
+        // تحديث العنصر البصري الفاخر في الهيدر (البادج الخاص بالعملة)
+        const balanceElement = document.querySelector('.balance-pill-badge span');
+        if (balanceElement) {
+            balanceElement.innerText = `${currentBalance} SINU`;
+        }
+    });
+}
+
+/**
+ * 3. نظام إرسال رسائل الشات التفاعلي المباشر للبث (+18 Chat Matrix)
+ */
+function sendLiveChatMessage(walletAddress, messageText) {
+    if (!messageText.trim()) return;
+    
+    const chatRef = coreDatabaseInstance.ref('live_stream_chats').push();
+    chatRef.set({
+        sender: walletAddress || "Anonymous_User",
+        message: messageText,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+}
+
+/**
+ * 4. الاستماع الفوري لشات البث وإضافته لعلبة الرسائل المتجاوبة تلقائياً
+ */
+function listenToLiveChat() {
+    const chatContainer = document.querySelector('.private-chat-messages-scroll-box');
+    if (!chatContainer) return;
+
+    coreDatabaseInstance.ref('live_stream_chats').limitToLast(25).on('child_added', (snapshot) => {
+        const data = snapshot.val();
+        
+        const messageWrapper = document.createElement('div');
+        messageWrapper.style.marginBottom = "8px";
+        messageWrapper.style.fontSize = "0.85rem";
+        messageWrapper.innerHTML = `
+            <strong style="color: var(--dating-pink);">${data.sender.substring(0, 6)}...:</strong> 
+            <span style="color: var(--text-main);">${data.message}</span>
+        `;
+        
+        chatContainer.appendChild(messageWrapper);
+        chatContainer.scrollTop = chatContainer.scrollHeight; // سكرول تلقائي لأسفل الشات
+    });
+}
+
+// تشغيل الاستماع للشات تلقائياً عند تحميل الصفحة
+document.addEventListener("DOMContentLoaded", () => {
+    listenToLiveChat();
+});
 
 /**
  * ==========================================================================
