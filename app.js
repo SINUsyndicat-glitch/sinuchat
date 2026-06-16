@@ -974,4 +974,27 @@ document.addEventListener("DOMContentLoaded", () => {
             processGiftSendingIntent(fallbackKeyId);
         }
     });
+
+    /**
+ * الدوال المفقودة التي يطلبها الـ DOM (أزرار الواجهة)
+ */
+function toggleAuthPanelMode(show) {
+    console.log("🛠️ [UI] جاري تبديل حالة لوحة المصادقة...");
+    const authBackdrop = document.querySelector(".core-auth-backdrop");
+    if (authBackdrop) {
+        authBackdrop.style.display = show ? "flex" : "none";
+    }
+}
+
+function executeCoreAuthenticationAction(actionType) {
+    console.log("🔑 [Auth] جاري تنفيذ إجراء المصادقة:", actionType);
+    if (actionType === "login") {
+        connectPlatformWallet();
+    } else if (actionType === "signup") {
+        // يمكنك توجيهها لنفس دالة ربط المحفظة لأنها هي الأساس في مشروعك
+        connectPlatformWallet();
+    }
+}
+
 });
+
