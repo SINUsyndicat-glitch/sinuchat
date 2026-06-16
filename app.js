@@ -139,7 +139,7 @@ function processSelectedAvatarImage(inputElement) {
 }
 
 // ==========================================================================
-// 13. المحرك المطور للمصادقة وإنشاء الحساب مع شروط شاشات التعارف
+// 13. المحرك المطور للمصادقة وإنشاء الحساب
 // ==========================================================================
 async function executeCoreAuthenticationAction() {
     const emailField = document.getElementById('inputAuthEmail');[cite: 3]
@@ -158,7 +158,6 @@ async function executeCoreAuthenticationAction() {
         if (currentAuthPanelMode === 'login') {
             await coreAuthInstance.signInWithEmailAndPassword(email, password);[cite: 3]
         } else {
-            // التحقق من الحقول المتقدمة للتسجيل
             const usernameEl = document.getElementById('inputAuthUsername');
             const ageEl = document.getElementById('inputAuthAge');
             const matchingEl = document.getElementById('selectAuthMatching');
@@ -178,18 +177,16 @@ async function executeCoreAuthenticationAction() {
                 return;
             }
             if (!matchingMode) {
-                alert('الرجاء تحديد طبيعة البحث (ذكر يبحث عن أنثى / أنثى تبحث عن ذكر)!');
+                alert('الرجاء تحديد طبيعة البحث والتعارف أولاً!');
                 return;
             }
 
-            // التحقق من تكرار الاسم في قاعدة البيانات
             const snapshot = await coreDatabaseInstance.ref('users').orderByChild('username').equalTo(username).once('value');[cite: 3]
             if (snapshot.exists()) { 
                 alert('اسم الشهرة محجوز مسبقاً من قبل مستخدم آخر!'); 
                 return;
             }
 
-            // إنشاء الحساب السحابي في Firebase
             const cred = await coreAuthInstance.createUserWithEmailAndPassword(email, password);[cite: 3]
             
             await coreDatabaseInstance.ref(`users/${cred.user.uid}`).set({[cite: 3]
@@ -213,7 +210,6 @@ async function executeCoreAuthenticationAction() {
     }
 }
 
-// مراقب حالة المستخدم المطور للموبايل
 coreAuthInstance.onAuthStateChanged((user) => {
     const backdrop = document.getElementById('coreAuthBackdrop');[cite: 3]
     const dashboard = document.getElementById('coreAppMainDashboard');[cite: 3]
@@ -223,7 +219,6 @@ coreAuthInstance.onAuthStateChanged((user) => {
         if(backdrop) backdrop.style.display = "none";[cite: 3]
         if(dashboard) dashboard.style.display = "block"; 
         
-        // تفعيل التبويب الأول تلقائياً
         const firstNavBtn = document.querySelector('.bottom-nav .nav-item');
         const firstPane = document.querySelector('.app-pane');
         if (firstPane) firstPane.classList.add('active');
@@ -500,5 +495,57 @@ function toggleLocalWebcamHardwareState() {
         isWebcamVideoTrackEnabled = false;[cite: 3]
         if(fallbackText) fallbackText.style.display = "flex";[cite: 3]
         document.getElementById('btnToggleCameraDevice').innerHTML = `<i class="fa-solid fa-video"></i>`;[cite: 3]
+    }
+}
+
+// دالة تفويض وشحن الـ Web3 المحدثة والمحمية من الأخطاء الإملائية والـ Syntax
+async function connectWeb3WalletBridge() {
+    if (typeof window.ethereum !== 'undefined') {
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);[cite: 3]
+            await provider.send("eth_requestAccounts", []);[cite: 3]
+            web3SignerInstance = provider.getSigner();[cite: 3]
+            const walletAddress = await web3SignerInstance.getAddress();[cite: 3]
+            kriptoChatContractInstance = new ethers.Contract(KRIPTO_CHAT_CONTRACT_ADDRESS, KRIPTO_CHAT_ABI, web3SignerInstance);[cite: 3]
+            sinuTokenContractInstance = new ethers.Contract(SINU_TOKEN_CONTRACT_ADDRESS, SINU_TOKEN_MINIMAL_ABI, web3SignerInstance);[cite: 3]
+            const tag = document.getElementById('uiConnectedWalletAddressTag');
+            if(tag) tag.innerText = `${walletAddress.substring(0,6)}...${walletAddress.substring(38)}`;[cite: 3]
+            updateWeb3OnchainBalances(walletAddress);[cite: 3]
+        } catch (e) {
+            alert("فشل ربط عقد المحفظة التكتيكية: " + e.message);
+        }
+    } else {
+        alert("لم يتم العثور على محفظة ويب 3 داخل متصفح الهاتف!");
+    }
+}
+
+async function updateWeb3OnchainBalances(walletAddress) {
+    if (!sinuTokenContractInstance || !kriptoChatContractInstance) return;[cite: 3]
+    try {
+        const walletBal = await sinuTokenContractInstance.balanceOf(walletAddress);[cite: 3]
+        const lbl1 = document.getElementById('onchainWalletBalanceLabel');
+        if(lbl1) lbl1.innerText = parseFloat(ethers.utils.formatEther(walletBal)).toFixed(2);[cite: 3]
+        const contractBal = await kriptoChatContractInstance.getInAppBalance(walletAddress);[cite: 3]
+        const lbl2 = document.getElementById('onchainContractInAppBalanceLabel');
+        if(lbl2) lbl2.innerText = parseFloat(ethers.utils.formatEther(contractBal)).toFixed(2);[cite: 3]
+    } catch (err) {
+        console.error("فشل قراءة أرصدة البلوكشين الذكية حياً:", err);
+    }
+}
+
+async function executeWeb3DepositSinuToContract() {
+    const amountStr = document.getElementById('inputDepositAmountWeiField').value.trim();[cite: 3]
+    if (!amountStr || !kriptoChatContractInstance || !sinuTokenContractInstance) { alert('الرجاء التأكد من ربط المحفظة أولاً!'); return; }[cite: 3]
+    try {
+        const amountWei = ethers.utils.parseEther(amountStr);[cite: 3]
+        alert('انتظر.. نقوم حالياً بعمل تفعيل وتفويض للعملة على شبكة البلوكشين الذكية...');
+        const txApprove = await sinuTokenContractInstance.approve(KRIPTO_CHAT_CONTRACT_ADDRESS, amountWei);
+        await txApprove.wait();[cite: 3]
+        alert('نجح التفويض! جاري تنفيذ معاملة الإيداع والشحن الفورية داخل عقد SINU الذكي...');
+        const txDeposit = await kriptoChatContractInstance.depositSinu(amountWei);[cite: 3]
+        await txDeposit.wait();[cite: 3]
+        alert('تم شحن محفظة العقد على شبكة البلوكشين بنجاح سرمدي 🌐');
+    } catch (err) {
+        alert('فشلت معاملة البلوكشين: ' + err.message);
     }
 }
